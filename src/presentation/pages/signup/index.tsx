@@ -1,10 +1,19 @@
-import { CardTitle, StyledCard, StyledContainer } from "@/presentation/styles/styled-components";
+import { Title, StyledCard, StyledContainer } from "@/presentation/styles/styled-components";
 import { CardContent, Tab, Tabs } from "@mui/material";
 import React, { useState } from "react";
 import { ProfessorForm } from "./components/professor-form";
 import { StudentForm } from "./components/student-form";
+import { IProfessorService } from "@/domain/usecases/professor-interface";
+import { IStudentService } from "@/domain/usecases/student-interface";
+import { IAuthService } from "@/domain/usecases/authentication-interface";
 
-const SignUpPage: React.FC = () => {
+type Props = {
+    authService: IAuthService;
+    professorService: IProfessorService;
+    studentService: IStudentService;
+}
+
+const SignUpPage: React.FC<Props> = ({ authService, professorService, studentService }) => {
     const [selectedTab, setSelectedTab] = useState(0);
 
     const handleTabChange = (event: React.SyntheticEvent, newValue: number) => setSelectedTab(newValue);
@@ -12,7 +21,9 @@ const SignUpPage: React.FC = () => {
     return (
         <StyledContainer>
             <StyledCard>
-                <CardTitle title="Crie sua conta" />
+                <Title style={{ textAlign: "center" }}>
+                    Crie sua conta
+                </Title>
                 <CardContent>
                     <Tabs
                         value={selectedTab}
@@ -24,7 +35,9 @@ const SignUpPage: React.FC = () => {
                         <Tab value={1} label="Aluno" />
                     </Tabs>
                     {
-                        !selectedTab ? <ProfessorForm /> : <StudentForm />
+                        !selectedTab
+                            ? <ProfessorForm authService={authService} professorService={professorService} />
+                            : <StudentForm authService={authService} studentService={studentService} />
                     }
                 </CardContent>
             </StyledCard>

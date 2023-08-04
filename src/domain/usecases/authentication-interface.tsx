@@ -14,7 +14,7 @@ export namespace IAuthService {
     }
 
     export type ConfirmEmailParams = {
-        userId: string,
+        email: string,
         token: string
     }
 

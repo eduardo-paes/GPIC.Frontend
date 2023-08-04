@@ -1,6 +1,6 @@
-import { UserLogin } from "@/domain/models/user-login";
 import { HttpRequest, HttpResponse, HttpStatusCode, IHttpClient } from "@/infrastructure/data/protocols/http";
 import { IAuthService } from "../../domain/usecases/authentication-interface";
+import { UserLogin } from "@/domain/models/user-login";
 
 export class AuthenticationService implements IAuthService {
     constructor(
@@ -10,15 +10,20 @@ export class AuthenticationService implements IAuthService {
 
     async login(params: IAuthService.LoginParams): Promise<UserLogin> {
         const httpRequest: HttpRequest = {
-            url: this.url,
+            url: this.url + 'login',
             method: 'POST',
-            body: params
+            body: params,
+            headers: {
+                'accept': 'text/plain',
+                'Content-Type': 'application/json'
+            }
         };
 
         try {
             const httpResponse: HttpResponse = await this.httpClient.request(httpRequest);
 
             if (httpResponse.statusCode === HttpStatusCode.ok) {
+                localStorage.setItem('jwtToken', httpResponse.body.token);
                 return httpResponse.body;
             } else {
                 throw new Error('Falha ao realizar o login');
@@ -30,7 +35,8 @@ export class AuthenticationService implements IAuthService {
 
     async confirmEmail(params: IAuthService.ConfirmEmailParams): Promise<string> {
         const httpRequest: HttpRequest = {
-            url: `${this.url}/ConfirmEmail?userId=${params.userId}&token=${params.token}`,
+            url: `${this.url}/confirmemail`,
+            body: params,
             method: 'POST'
         };
 
@@ -49,9 +55,8 @@ export class AuthenticationService implements IAuthService {
 
     async forgotPassword(params: IAuthService.ForgotPasswordParams): Promise<string> {
         const response = await this.httpClient.request({
-            url: `${this.url}/ForgotPassword`,
+            url: `${this.url}forgotpassword`,
             method: 'POST',
-            headers: {},
             body: { email: params.email }
         });
 
@@ -65,7 +70,7 @@ export class AuthenticationService implements IAuthService {
 
     async resetPassword(params: IAuthService.ResetPasswordParams): Promise<string> {
         const response = await this.httpClient.request({
-            url: `${this.url}/ResetPassword`,
+            url: `${this.url}/resetpassword`,
             method: 'POST',
             body: params
         });

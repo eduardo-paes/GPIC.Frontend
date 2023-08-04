@@ -1,8 +1,16 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { InputStyled, TokenInput, TokenInputContainer } from './styles';
+import { Box, Typography } from '@mui/material';
+import { StyledButton, Title } from '@/presentation/styles/styled-components';
+import { IAuthService } from '@/domain/usecases/authentication-interface';
 
-const EmailConfirmationPage = () => {
+type Props = {
+    authService: IAuthService;
+    email: string;
+}
+
+const EmailConfirmationPage: React.FC<Props> = ({ authService, email }) => {
     const [token, setToken] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
@@ -11,25 +19,23 @@ const EmailConfirmationPage = () => {
         setToken(event.target.value);
     };
 
-    function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
+        await authService.confirmEmail({ token, email })
         setIsLoading(true);
-
-        // Simule uma requisição assíncrona para verificar o token
         setTimeout(() => {
             setIsLoading(false);
-            // Redirecionar para outra página após a confirmação do email
             navigate('/');
         }, 2000);
     }
 
     return (
-        <div>
-            <h2>Confirmação de E-mail</h2>
+        <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', padding: '2rem' }}>
+            <Title style={{ textAlign: "center" }} >Confirmação de E-mail</Title>
             <form onSubmit={handleSubmit}>
-                <TokenInputContainer> {/* Use uma classe CSS personalizada para estilizar o container */}
-                    <label htmlFor="token">Insira o Token:</label>
-                    <TokenInput> {/* Use uma classe CSS personalizada para estilizar o campo */}
+                <TokenInputContainer>
+                    <label htmlFor="token">Insira o código enviado para o seu email institucional.</label>
+                    <TokenInput>
                         <InputStyled
                             type="text"
                             id="token"
@@ -40,9 +46,11 @@ const EmailConfirmationPage = () => {
                         />
                     </TokenInput>
                 </TokenInputContainer>
-                <button type="submit" disabled={isLoading}>
-                    {isLoading ? 'Carregando...' : 'Confirmar'}
-                </button>
+                <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                    <StyledButton variant="contained" color="primary" type="submit" disabled={isLoading}>
+                        {isLoading ? 'Carregando...' : 'Confirmar'}
+                    </StyledButton>
+                </Box>
             </form>
         </div>
     );

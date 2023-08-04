@@ -1,11 +1,16 @@
 import { StyledContainer } from "@/presentation/styles/styled-components";
-import { PasswordRecoveryForm } from "./components/password-recovery-form";
+import PasswordRecoveryForm from "./components/password-recovery-form";
+import { IAuthService } from "@/domain/usecases/authentication-interface";
 
-export const PasswordRecoveryPage = () => {
+type Props = {
+    authService: IAuthService;
+}
+
+export const PasswordRecoveryPage: React.FC<Props> = ({ authService }) => {
 
     return (
         <StyledContainer>
-            <PasswordRecoveryForm />
+            <PasswordRecoveryForm authService={authService} />
         </StyledContainer>
     );
 };
