@@ -12,11 +12,7 @@ export class AuthenticationService implements IAuthService {
         const httpRequest: HttpRequest = {
             url: this.url + 'login',
             method: 'POST',
-            body: params,
-            headers: {
-                'accept': 'text/plain',
-                'Content-Type': 'application/json'
-            }
+            body: params
         };
 
         try {
