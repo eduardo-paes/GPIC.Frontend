@@ -3,10 +3,28 @@ export const validateName = (name: string | undefined): string | null => {
 	return null;
 };
 
-export const validateEmail = (
-	description: string | undefined
+export const validateEmail = (email: string | undefined): string | null => {
+	const emailRegex = /^[^\s@]+@(professor|aluno)\.cefet-rj\.br$/;
+	if (!email) return "Campo obrigatório.";
+	if (!emailRegex.test(email)) return "Insira um email válido.";
+	return null;
+};
+
+export const validateStudentEmail = (
+	email: string | undefined
 ): string | null => {
-	if (!description) return "Campo obrigatório.";
+	const emailRegex = /^[^\s@]+@aluno\.cefet-rj\.br$/;
+	if (!email) return "Campo obrigatório.";
+	if (!emailRegex.test(email)) return "Insira um email válido.";
+	return null;
+};
+
+export const validateProfessorEmail = (
+	email: string | undefined
+): string | null => {
+	const emailRegex = /^[^\s@]+@professor\.cefet-rj\.br$/;
+	if (!email) return "Campo obrigatório.";
+	// if (!emailRegex.test(email)) return "Insira um email válido.";
 	return null;
 };
 
@@ -111,6 +129,16 @@ export const validateCEP = (CEP: string | undefined): string | null => {
 	return null;
 };
 
+export const validateRegistrationCode = (
+	registrationCode: string | undefined
+): string | null => {
+	if (!registrationCode) return "Campo obrigatório";
+	if (registrationCode.length < 11)
+		return "A matrícula deve possuir no mínimo 11 caracteres";
+
+	return null;
+};
+
 export const validateCampus = (campusId: string | undefined): string | null => {
 	if (!campusId) return "Campo obrigatório";
 
@@ -160,15 +188,19 @@ export const validateCellPhone = (
 };
 
 export const validateSIAPE = (SIAPE: string | undefined): string | null => {
+	console.log(SIAPE);
+
 	if (!SIAPE) return "Campo obrigatório";
 
 	return null;
 };
 
 export const validateIdLattes = (
-	idLattes: string | undefined
+	identifyLattes: string | undefined
 ): string | null => {
-	if (!idLattes) return "Campo obrigatório";
+	console.log(identifyLattes);
+
+	if (!identifyLattes) return "Campo obrigatório";
 
 	return null;
 };

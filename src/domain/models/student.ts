@@ -18,6 +18,7 @@ export interface Student {
 	issuingAgency: string;
 	RG: number;
 	birthDate: string;
+	registrationCode: string;
 	course: string;
 	campus: string;
 	user: User;

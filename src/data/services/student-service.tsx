@@ -43,6 +43,7 @@ export class StudentService implements IStudentService {
             city: params.city,
             UF: params.UF,
             CEP: params.CEP,
+            registrationCode: params.registrationCode,
             campusId: params.campusId,
             courseId: params.courseId,
             startYear: params.startYear,

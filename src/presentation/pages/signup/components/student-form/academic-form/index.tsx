@@ -3,7 +3,7 @@ import { StyledButton, StyledSelectField, StyledTextField } from "@/presentation
 import { Box, FormControl, FormHelperText, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material";
 import { Form, Formik, FormikHelpers } from "formik";
 import React from "react";
-import { validateCampus, validateCourse, validateStartYear, validateTypeAssistance } from "../../../validations";
+import { validateCampus, validateCourse, validateRegistrationCode, validateStartYear, validateTypeAssistance } from "../../../validations";
 
 const CAMPUSES_MOCK = [
     { id: 1, name: 'Campus A' },
@@ -24,6 +24,7 @@ const TYPE_ASSISTANCE_MOCK = [
 ];
 
 type AcademicError = {
+    registrationCode: string | null;
     campusId: string | null;
     courseId: string | null;
     startYear: string | null;
@@ -41,12 +42,13 @@ const AcademicDataForm: React.FC<Props> = ({ student, setStudent, activeStep, se
 
     const [errors, setErrors] = React.useState<AcademicError>();
 
-    const handleTextFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleRegistrationCodeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
-        setStudent((prevStudent: any) => ({
-            ...prevStudent,
-            [name]: value,
-        }));
+        if (value.length < 21)
+            setStudent((prevStudent: any) => ({
+                ...prevStudent,
+                [name]: value,
+            }));
     };
 
     const handleStartYearChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,6 +82,7 @@ const AcademicDataForm: React.FC<Props> = ({ student, setStudent, activeStep, se
 
     const validateForm = (): boolean => {
         const newErrors: AcademicError = {
+            registrationCode: validateRegistrationCode(student.registrationCode),
             campusId: validateCampus(student.campusId),
             courseId: validateCourse(student.courseId),
             startYear: validateStartYear(student.startYear),
@@ -105,6 +108,16 @@ const AcademicDataForm: React.FC<Props> = ({ student, setStudent, activeStep, se
             onSubmit={handleSubmit}
         >
             <Form>
+                <StyledTextField
+                    fullWidth
+                    type="text"
+                    value={student.registrationCode}
+                    error={errors && errors.registrationCode !== null}
+                    name="registrationCode"
+                    label="Matrícula"
+                    onChange={handleRegistrationCodeChange}
+                />
+                {errors?.campusId && <FormHelperText error>{errors.campusId}</FormHelperText>}
                 <FormControl fullWidth sx={{ marginTop: '1rem' }}>
                     <InputLabel>Campus</InputLabel>
                     <StyledSelectField

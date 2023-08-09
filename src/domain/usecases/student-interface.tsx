@@ -38,6 +38,7 @@ export namespace IStudentService {
         city: string;
         UF: string;
         CEP: string;
+        registrationCode: string;
         campusId: string;
         courseId: string;
         startYear: string;
