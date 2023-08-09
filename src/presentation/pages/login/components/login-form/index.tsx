@@ -1,13 +1,15 @@
 import { IAuthService } from "@/domain/usecases/authentication-interface";
+import GPICLogo from "@/presentation/assets/logo.png";
 import { validateEmail, validatePassword } from "@/presentation/pages/signup/validations";
-import { Form, Paragraph, StyledButton, StyledCard, StyledTextField, Title } from "@/presentation/styles/styled-components";
+import { Form, Paragraph, StyledButton, StyledCard, StyledTextField, Subtitle } from "@/presentation/styles/styled-components";
 import {
     CardContent,
+    CardMedia,
     FormHelperText,
     Link
 } from "@mui/material";
 import React from "react";
-import { redirect } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
     authService: IAuthService;
@@ -23,8 +25,9 @@ export const LoginForm: React.FC<Props> = ({ authService }) => {
     const [email, setEmail] = React.useState<string>("");
     const [password, setPassword] = React.useState<string>("");
     const [errors, setErrors] = React.useState<LoginError>();
+    const navigate = useNavigate();
 
-    const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(event.target.value);
         setErrors((prevErrors: any) => ({
             ...prevErrors,
@@ -41,13 +44,11 @@ export const LoginForm: React.FC<Props> = ({ authService }) => {
     };
 
     const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        const isValid = validateForm();
         event.preventDefault();
-        if (validateForm()) {
-            await authService.login({ email: email, password }).then(() => {
-                redirect('/')
-            });
-        } else {
-            event.preventDefault();
+        if (isValid) {
+            await authService.login({ email: email, password });
+            navigate('/home', { replace: true });
         }
     };
 
@@ -67,22 +68,29 @@ export const LoginForm: React.FC<Props> = ({ authService }) => {
 
     return (
         <StyledCard>
-            <Title style={{ textAlign: 'center' }}>COPET</Title>
+            <CardMedia
+                component="img"
+                sx={{ position: 'relative', left: '50%', transform: 'translateX(-50%)', height: 100, width: '60%' }}
+                image={GPICLogo}
+                alt="GPIC Logo"
+            />
+            <Subtitle style={{ textAlign: 'center' }}>Gerenciamento de Projetos de Iniciação Científica</Subtitle>
             <CardContent>
                 <Form onSubmit={handleFormSubmit}>
                     <StyledTextField
-                        label="Username"
+                        label="Email"
                         variant="outlined"
                         value={email}
-                        onChange={handleUsernameChange}
+                        onChange={handleEmailChange}
                         error={errors && errors.email !== null}
                     />
                     {errors?.email && <FormHelperText error>{errors.email}</FormHelperText>}
                     <StyledTextField
-                        label="Password"
+                        label="Senha"
                         variant="outlined"
                         type="password"
                         value={password}
+                        autoComplete=""
                         onChange={handlePasswordChange}
                         error={errors && errors.password !== null}
                     />
