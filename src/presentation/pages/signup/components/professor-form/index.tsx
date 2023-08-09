@@ -1,3 +1,4 @@
+import React from "react";
 import { Form, StyledTextField } from "@/presentation/styles/styled-components";
 
 import { ProfessorDTO } from "@/data/models/professor-dto";
@@ -6,9 +7,8 @@ import { IProfessorService } from "@/domain/usecases/professor-interface";
 import { ProfessorViewModel } from "@/presentation/models/professor";
 import { StyledButton } from "@/presentation/styles/styled-components";
 import { cpfMask } from "@/presentation/utils";
-import { Box, FormHelperText, InputAdornment } from "@mui/material";
-import React from "react";
-import { validateCPF, validateConfirmPassword, validateEmail, validateIdLattes, validateName, validatePassword, validateSIAPE } from "../../validations";
+import { Box, FormHelperText } from "@mui/material";
+import { validateCPF, validateConfirmPassword, validateProfessorEmail, validateIdLattes, validateName, validatePassword, validateSIAPE } from "../../validations";
 
 type ProfessorError = {
     name: string | null;
@@ -17,44 +17,67 @@ type ProfessorError = {
     password: string | null;
     confirmPassword: string | null;
     SIAPE: string | null;
-    idLattes: string | null;
+    identifyLattes: string | null;
 };
 
-type Props = {
+interface Props {
     authService: IAuthService;
     professorService: IProfessorService;
+    professor: ProfessorViewModel;
+    setProfessor: (professor: any) => void;
+    setEmailValidationPending: (emailValidationPending: boolean) => void;
 }
 
-export const ProfessorForm: React.FC<Props> = ({ authService, professorService }) => {
+export const ProfessorForm: React.FC<Props> = ({ authService, professorService, professor, setProfessor, setEmailValidationPending }) => {
 
-    const [professor, setProfessor] = React.useState<ProfessorViewModel>({});
     const [errors, setErrors] = React.useState<ProfessorError>();
+    const [buttonDisable, setButtonDisable] = React.useState<boolean>(false);
 
-    const handleTextFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = event.target;
-        setProfessor((prevProfessor: any) => ({
-            ...prevProfessor,
-            [name]: value
-        }));
-    };
-
-    const handleCPFChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const { value } = event.target;
-        if (value.length < 15)
+    const handleTextFieldChange = React.useCallback(
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+            const { name, value } = event.target;
             setProfessor((prevProfessor: any) => ({
                 ...prevProfessor,
-                CPF: cpfMask(value),
+                [name]: value,
             }));
-    };
+        },
+        [setProfessor]
+    );
 
-    const handleSIAPEChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const { value } = event.target;
-        if (value.length < 15)
+    const handleCPFChange = React.useCallback(
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+            const { value } = event.target;
+            if (value.length < 15)
+                setProfessor((prevProfessor: any) => ({
+                    ...prevProfessor,
+                    CPF: cpfMask(value),
+                }));
+        },
+        [setProfessor]
+    );
+
+    const handleSIAPEChange = React.useCallback(
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+            const { value } = event.target;
+            if (value.length < 8)
+                setProfessor((prevProfessor: any) => ({
+                    ...prevProfessor,
+                    SIAPEEnrollment: value.replace(/\D/g, ''),
+                }));
+        },
+        [setProfessor]
+    );
+
+    const handleIdLattesChange = React.useCallback(
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+            const { value } = event.target;
             setProfessor((prevProfessor: any) => ({
                 ...prevProfessor,
-                SIAPE: value.replace(/\D/g, ''),
+                identifyLattes: value.replace(/\D/g, ''),
             }));
-    };
+        },
+        [setProfessor]
+    );
 
     function mapProfessorViewModelToDTO(professor: ProfessorViewModel): ProfessorDTO {
         return {
@@ -62,9 +85,8 @@ export const ProfessorForm: React.FC<Props> = ({ authService, professorService }
             CPF: professor.CPF!,
             email: professor.email!,
             password: professor.password!,
-            confirmPassword: professor.confirmPassword!,
-            SIAPE: professor.SIAPE!,
-            idLattes: parseInt(professor.idLattes!)
+            SIAPEEnrollment: professor.SIAPEEnrollment!,
+            identifyLattes: parseInt(professor.identifyLattes!)
         };
     }
 
@@ -74,9 +96,17 @@ export const ProfessorForm: React.FC<Props> = ({ authService, professorService }
 
     const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+
         if (validateForm()) {
-            const professorDTO = mapProfessorViewModelToDTO(professor);
-            await professorService.add(professorDTO);
+            try {
+                setButtonDisable(true);
+                const professorDTO = mapProfessorViewModelToDTO(professor);
+                await professorService.add(professorDTO);
+                setEmailValidationPending(true);
+            } catch (error) {
+                console.error(error);
+                setButtonDisable(false);
+            }
         }
     };
 
@@ -84,11 +114,11 @@ export const ProfessorForm: React.FC<Props> = ({ authService, professorService }
         const newErrors: ProfessorError = {
             name: validateName(professor.name),
             CPF: validateCPF(professor.CPF),
-            email: validateEmail(professor.email),
+            email: validateProfessorEmail(professor.email),
             password: validatePassword(professor.password),
             confirmPassword: validateConfirmPassword(professor.password, professor.confirmPassword),
-            SIAPE: validateSIAPE(professor.SIAPE),
-            idLattes: validateIdLattes(professor.idLattes)
+            SIAPE: validateSIAPE(professor.SIAPEEnrollment),
+            identifyLattes: validateIdLattes(professor.identifyLattes)
         };
 
         if (
@@ -98,7 +128,7 @@ export const ProfessorForm: React.FC<Props> = ({ authService, professorService }
             newErrors.password ||
             newErrors.confirmPassword ||
             newErrors.SIAPE ||
-            newErrors.idLattes
+            newErrors.identifyLattes
         )
             setErrors(newErrors);
         else
@@ -129,11 +159,8 @@ export const ProfessorForm: React.FC<Props> = ({ authService, professorService }
 
             {errors?.CPF && <FormHelperText error>{errors.CPF}</FormHelperText>}
             <StyledTextField
-                label="Email"
+                label="Email Institucional"
                 type="text"
-                InputProps={{
-                    endAdornment: <InputAdornment position="end">@professor.cefet-rj.br</InputAdornment>
-                }}
                 name="email"
                 value={professor.email}
                 error={errors && errors.email !== null}
@@ -165,8 +192,8 @@ export const ProfessorForm: React.FC<Props> = ({ authService, professorService }
             <StyledTextField
                 label="SIAPE"
                 type="text"
-                name="SIAPE"
-                value={professor.SIAPE}
+                name="SIAPEEnrollment"
+                value={professor.SIAPEEnrollment}
                 error={errors && errors.SIAPE !== null}
                 onChange={handleSIAPEChange}
                 inputProps={{ pattern: '[0-9]*' }}
@@ -176,19 +203,20 @@ export const ProfessorForm: React.FC<Props> = ({ authService, professorService }
             <StyledTextField
                 label="Identificador Lattes"
                 type="text"
-                name="idLattes"
-                value={professor.idLattes}
-                error={errors && errors.idLattes !== null}
-                onChange={handleTextFieldChange}
+                name="identifyLattes"
+                value={professor.identifyLattes}
+                error={errors && errors.identifyLattes !== null}
+                onChange={handleIdLattesChange}
+                inputProps={{ pattern: '[0-9]*' }}
             />
-            {errors?.idLattes && <FormHelperText error>{errors.idLattes}</FormHelperText>}
+            {errors?.identifyLattes && <FormHelperText error>{errors.identifyLattes}</FormHelperText>}
 
 
             <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', pt: 2 }}>
                 <StyledButton variant="outlined" color="primary" type="button" onClick={goBack}>
                     Voltar
                 </StyledButton>
-                <StyledButton variant="contained" color="primary" type="submit">
+                <StyledButton disabled={buttonDisable} variant="contained" color="primary" type="submit">
                     Avançar
                 </StyledButton>
             </Box>

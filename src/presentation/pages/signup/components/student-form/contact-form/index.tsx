@@ -16,9 +16,10 @@ type Props = {
     setStudent: (student: any) => void;
     activeStep: number;
     setActiveStep: (activeStep: number) => void;
+    setEmailValidationPending: (emailValidationPending: boolean) => void;
 };
 
-const ContactDataForm: React.FC<Props> = ({ student, setStudent, activeStep, setActiveStep }) => {
+const ContactDataForm: React.FC<Props> = ({ student, setStudent, activeStep, setActiveStep, setEmailValidationPending }) => {
 
     const [errors, setErrors] = React.useState<ContactError>();
 
@@ -41,7 +42,7 @@ const ContactDataForm: React.FC<Props> = ({ student, setStudent, activeStep, set
 
     const handleSubmit = (_values: StudentViewModel, formikHelpers: FormikHelpers<StudentViewModel>) => {
         if (validateForm()) {
-            setActiveStep(activeStep + 1);
+            setEmailValidationPending(true);
             formikHelpers.setSubmitting(false);
         }
     };
