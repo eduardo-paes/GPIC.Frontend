@@ -27,8 +27,7 @@ export namespace IProfessorService {
         CPF: string;
         email: string;
         password: string;
-        confirmPassword: string;
-        SIAPE: string;
-        idLattes: number;
+        SIAPEEnrollment: string;
+        identifyLattes: number;
     };
 }

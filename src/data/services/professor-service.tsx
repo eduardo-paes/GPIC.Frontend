@@ -30,11 +30,10 @@ export class ProfessorService implements IProfessorService {
         const professorDTO: ProfessorDTO = {
             name: params.name,
             CPF: params.CPF,
-            email: params.email + "@professor.cefet-rj.br",
+            email: params.email,
             password: params.password,
-            confirmPassword: params.confirmPassword,
-            SIAPE: params.SIAPE,
-            idLattes: params.idLattes
+            SIAPEEnrollment: params.SIAPEEnrollment,
+            identifyLattes: params.identifyLattes
         };
 
         const httpRequest: HttpRequest = {
@@ -42,8 +41,6 @@ export class ProfessorService implements IProfessorService {
             method: 'POST',
             body: professorDTO
         };
-
-        console.log(httpRequest);
 
         try {
             const httpResponse: HttpResponse = await this.httpClient.request(httpRequest);

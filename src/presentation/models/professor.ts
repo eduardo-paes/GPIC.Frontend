@@ -8,7 +8,7 @@ export interface ProfessorViewModel {
 	//#endregion
 
 	//#region Base Professor Contract (required properties)
-	SIAPE?: string;
-	idLattes?: string;
+	SIAPEEnrollment?: string;
+	identifyLattes?: string;
 	//#endregion
 }
