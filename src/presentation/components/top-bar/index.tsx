@@ -25,10 +25,15 @@ const TopBar: React.FC = () => {
         setAnchorEl(null);
     };
 
+    const navigateToNoticePage = () => {
+        navigate('/edital');
+    };
+
     const handleLogout = () => {
         localStorage.removeItem('jwtToken');
         navigate('/login');
     };
+
     return (
         <AppBar position="static" sx={{ padding: '1rem' }}>
             <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -68,6 +73,7 @@ const TopBar: React.FC = () => {
                     onClose={handleMenuClose}
                 >
                     <MenuItem onClick={handleMenuClose}>Perfil</MenuItem>
+                    <MenuItem onClick={navigateToNoticePage}>Gerenciar Editais</MenuItem>
                     <MenuItem onClick={handleLogout}>Logout</MenuItem>
                 </Menu>
             </Toolbar>
