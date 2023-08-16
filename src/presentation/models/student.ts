@@ -25,7 +25,7 @@ export interface StudentViewModel {
 	//#endregion
 
 	//#region Base Student Contract (optional properties)
-	typeAssistanceId?: string;
+	assistanceTypeId?: string;
 	phoneDDD?: string;
 	phone?: string;
 	cellPhoneDDD?: string;

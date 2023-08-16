@@ -53,7 +53,7 @@ export const StudentForm: React.FC<Props> = ({ authService, studentService, stud
                     }
                     {
                         activeStep === 3 &&
-                        <ContactDataForm activeStep={activeStep} setActiveStep={setActiveStep} student={student} setStudent={setStudent} setEmailValidationPending={setEmailValidationPending} />
+                        <ContactDataForm studentService={studentService} activeStep={activeStep} setActiveStep={setActiveStep} student={student} setStudent={setStudent} setEmailValidationPending={setEmailValidationPending} />
                     }
                 </React.Fragment>
             }

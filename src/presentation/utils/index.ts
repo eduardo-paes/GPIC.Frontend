@@ -47,6 +47,10 @@ export function phoneMask(value: string) {
 	return { maskedValue, DDD };
 }
 
+export function removeNonNumeric(input: string) {
+	return input.replace(/[^0-9]/g, "");
+}
+
 export const STATES = {
 	AC: "Acre (AC)",
 	AL: "Alagoas (AL)",

@@ -27,7 +27,6 @@ export namespace IStudentService {
         CPF: string;
         email: string;
         password: string;
-        confirmPassword: string;
         birthDate: Date;
         RG: string;
         issuingAgency: string;
@@ -42,7 +41,7 @@ export namespace IStudentService {
         campusId: string;
         courseId: string;
         startYear: string;
-        typeAssistanceId: string;
+        assistanceTypeId: string;
         phoneDDD: string;
         phone: string;
         cellPhoneDDD: string;

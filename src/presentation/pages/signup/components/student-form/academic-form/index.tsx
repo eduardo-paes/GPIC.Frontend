@@ -6,21 +6,26 @@ import React from "react";
 import { validateCampus, validateCourse, validateRegistrationCode, validateStartYear, validateTypeAssistance } from "../../../validations";
 
 const CAMPUSES_MOCK = [
-    { id: 1, name: 'Campus A' },
-    { id: 2, name: 'Campus B' },
-    { id: 3, name: 'Campus C' },
+    { id: "d04dd94a-8e17-4435-a85b-81947a3ade45", name: 'Maracanã' },
+    { id: "81b651f0-fb43-495f-988d-a87ff41dee65", name: 'Nova Friburgo' },
+    { id: "de00d078-8b83-474a-aa47-a24471c45bc2", name: 'Petrópolis' },
 ];
 
 const COURSES_MOCK = [
-    { id: 1, name: 'Curso X' },
-    { id: 2, name: 'Curso Y' },
-    { id: 3, name: 'Curso Z' },
+    { id: "35cc0adf-4fb5-4428-a745-008794ac0e60", name: 'Bacharelado em Línguas Estrangeiras Aplicadas às Negociações Internacionais' },
+    { id: "eab402c3-0a9b-458b-a348-20660f9de623", name: 'Bacharelado em Engenharia Elétrica' },
+    { id: "bbbc4e5f-d1a8-4410-818b-1919d6c16cec", name: 'Bacharelado em Engenharia de Computação' },
+    { id: "3f55aa62-622c-424c-84e8-1b511734b71e", name: 'Bacharelado em Turismo' },
+    { id: "de06d1fb-a132-4b28-b967-e88c3c927719", name: 'Bacharelado em Administração' },
 ];
 
 const TYPE_ASSISTANCE_MOCK = [
-    { id: 1, name: 'Bolsa 1' },
-    { id: 2, name: 'Bolsa 2' },
-    { id: 3, name: 'Bolsa 3' },
+    { id: "da8ba703-351e-4094-8b25-ab3890d24609", name: 'Sem bolsa' },
+    { id: "12490981-b8d4-41a9-ae12-7356e4b2120a", name: 'PAED' },
+    { id: "2791d044-7cdf-497b-abe8-db18c6e2c9d4", name: 'PAEm' },
+    { id: "c2ee4eb8-ab3f-43a4-8fd9-54e3281d90bf", name: 'PAE' },
+    { id: "28689fc2-0655-492c-83f1-14552480ee71", name: 'Auxílio Digital' },
+    { id: "0d69e97f-e11e-4504-8771-14f1c2f6cff8", name: 'Outra' },
 ];
 
 type AcademicError = {
@@ -28,7 +33,7 @@ type AcademicError = {
     campusId: string | null;
     courseId: string | null;
     startYear: string | null;
-    typeAssistanceId: string | null;
+    assistanceTypeId: string | null;
 };
 
 type Props = {
@@ -86,14 +91,14 @@ const AcademicDataForm: React.FC<Props> = ({ student, setStudent, activeStep, se
             campusId: validateCampus(student.campusId),
             courseId: validateCourse(student.courseId),
             startYear: validateStartYear(student.startYear),
-            typeAssistanceId: validateTypeAssistance(student.typeAssistanceId)
+            assistanceTypeId: validateTypeAssistance(student.assistanceTypeId)
         };
 
         if (
             newErrors.campusId ||
             newErrors.courseId ||
             newErrors.startYear ||
-            newErrors.typeAssistanceId
+            newErrors.assistanceTypeId
         )
             setErrors(newErrors);
         else
@@ -168,9 +173,9 @@ const AcademicDataForm: React.FC<Props> = ({ student, setStudent, activeStep, se
                     <InputLabel>Tipo da Bolsa</InputLabel>
                     <StyledSelectField
                         fullWidth
-                        value={student.typeAssistanceId}
-                        error={errors && errors.typeAssistanceId !== null}
-                        name="typeAssistanceId"
+                        value={student.assistanceTypeId}
+                        error={errors && errors.assistanceTypeId !== null}
+                        name="assistanceTypeId"
                         label="Tipo da Bolsa"
                         onChange={handleSelectFieldChange}
                     >
@@ -181,12 +186,12 @@ const AcademicDataForm: React.FC<Props> = ({ student, setStudent, activeStep, se
                         ))}
                     </StyledSelectField>
                 </FormControl>
-                {errors?.typeAssistanceId && <FormHelperText error>{errors.typeAssistanceId}</FormHelperText>}
-                <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                    <StyledButton variant="outlined" color="primary" type="button" onClick={goBack}>
+                {errors?.assistanceTypeId && <FormHelperText error>{errors.assistanceTypeId}</FormHelperText>}
+                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', pt: 2 }}>
+                    <StyledButton variant="outlined" onClick={goBack}>
                         Voltar
                     </StyledButton>
-                    <StyledButton variant="contained" color="primary" type="submit">
+                    <StyledButton variant="contained" type="submit">
                         Avançar
                     </StyledButton>
                 </Box>

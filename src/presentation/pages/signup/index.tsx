@@ -22,7 +22,10 @@ const SignUpPage: React.FC<Props> = ({ authService, professorService, studentSer
     const [student, setStudent] = React.useState<StudentViewModel>({});
     const [professor, setProfessor] = React.useState<ProfessorViewModel>({});
 
-    const handleTabChange = (event: React.SyntheticEvent, newValue: number) => setSelectedTab(newValue);
+    const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+        setEmailValidationPending(false);
+        setSelectedTab(newValue);
+    }
 
     return (
         <StyledContainer>

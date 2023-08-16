@@ -4,7 +4,7 @@ export const validateName = (name: string | undefined): string | null => {
 };
 
 export const validateEmail = (email: string | undefined): string | null => {
-	const emailRegex = /^[^\s@]+@(professor|aluno)\.cefet-rj\.br$/;
+	const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 	if (!email) return "Campo obrigatório.";
 	if (!emailRegex.test(email)) return "Insira um email válido.";
 	return null;
@@ -191,6 +191,7 @@ export const validateSIAPE = (SIAPE: string | undefined): string | null => {
 	console.log(SIAPE);
 
 	if (!SIAPE) return "Campo obrigatório";
+	if (SIAPE.length < 7) return "A Matrícula SIAPE deve conter 7 caracteres.";
 
 	return null;
 };
