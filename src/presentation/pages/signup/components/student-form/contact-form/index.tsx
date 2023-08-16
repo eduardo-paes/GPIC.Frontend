@@ -3,7 +3,7 @@ import { StyledButton, StyledTextField } from "@/presentation/styles/styled-comp
 import { Box, FormHelperText } from "@mui/material";
 import { Form, Formik, FormikHelpers } from "formik";
 import React from "react";
-import { phoneMask } from "@/presentation/utils";
+import { phoneMask, removeNonNumeric } from "@/presentation/utils";
 import { validatePhone, validateCellPhone } from "../../../validations";
 import { IStudentService } from "@/domain/usecases/student-interface";
 import { StudentDTO } from "@/data/models/student-dto";
@@ -49,9 +49,8 @@ const ContactDataForm: React.FC<Props> = ({ student, setStudent, activeStep, set
             CPF: student.CPF!,
             email: student.email!,
             password: student.password!,
-            confirmPassword: student.confirmPassword!,
             birthDate: student.birthDate!,
-            RG: student.RG!,
+            RG: parseInt(removeNonNumeric(student.RG!)),
             issuingAgency: student.issuingAgency!,
             dispatchDate: student.dispatchDate!,
             gender: student.gender!,
@@ -59,16 +58,16 @@ const ContactDataForm: React.FC<Props> = ({ student, setStudent, activeStep, set
             homeAddress: student.homeAddress!,
             city: student.city!,
             UF: student.UF!,
-            CEP: student.CEP!,
+            CEP: parseInt(removeNonNumeric(student.CEP!)),
             registrationCode: student.registrationCode!,
             campusId: student.campusId!,
             courseId: student.courseId!,
             startYear: student.startYear!,
             assistanceTypeId: student.assistanceTypeId!,
-            phoneDDD: student.phoneDDD!,
-            phone: student.phone!,
-            cellPhoneDDD: student.cellPhoneDDD!,
-            cellPhone: student.cellPhone!,
+            phoneDDD: parseInt(student.phoneDDD!),
+            phone: parseInt(removeNonNumeric(student.phone!)),
+            cellPhoneDDD: parseInt(student.cellPhoneDDD!),
+            cellPhone: parseInt(removeNonNumeric(student.cellPhone!)),
         };
     }
 

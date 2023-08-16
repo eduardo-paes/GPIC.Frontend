@@ -28,7 +28,7 @@ export namespace IStudentService {
         email: string;
         password: string;
         birthDate: Date;
-        RG: string;
+        RG: number;
         issuingAgency: string;
         dispatchDate: Date;
         gender: string;
@@ -36,15 +36,15 @@ export namespace IStudentService {
         homeAddress: string;
         city: string;
         UF: string;
-        CEP: string;
+        CEP: number;
         registrationCode: string;
         campusId: string;
         courseId: string;
         startYear: string;
         assistanceTypeId: string;
-        phoneDDD: string;
-        phone: string;
-        cellPhoneDDD: string;
-        cellPhone: string;
+        phoneDDD?: number;
+        phone?: number;
+        cellPhoneDDD?: number;
+        cellPhone?: number;
     };
 }
