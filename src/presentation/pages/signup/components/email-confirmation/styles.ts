@@ -6,7 +6,6 @@ const TokenInputContainer = styled("div")({
 	alignItems: "center",
 	justifyContent: "center",
 	flexDirection: "column",
-	marginBottom: "1.25rem",
 });
 
 const TokenInput = styled("div")({

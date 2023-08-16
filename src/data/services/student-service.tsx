@@ -2,6 +2,7 @@ import { Student } from "@/domain/models/student";
 import { IStudentService } from "@/domain/usecases/student-interface";
 import { HttpRequest, HttpResponse, HttpStatusCode, IHttpClient } from "@/infrastructure/data/protocols/http";
 import { StudentDTO } from "../models/student-dto";
+import { removeNonNumeric } from "@/presentation/utils";
 
 /**
  * Classe que implementa a interface de adição de usuário.
@@ -32,7 +33,6 @@ export class StudentService implements IStudentService {
             CPF: params.CPF,
             email: params.email,
             password: params.password,
-            confirmPassword: params.confirmPassword,
             birthDate: params.birthDate,
             RG: params.RG,
             issuingAgency: params.issuingAgency,
@@ -43,10 +43,11 @@ export class StudentService implements IStudentService {
             city: params.city,
             UF: params.UF,
             CEP: params.CEP,
+            registrationCode: params.registrationCode,
             campusId: params.campusId,
             courseId: params.courseId,
             startYear: params.startYear,
-            typeAssistanceId: params.typeAssistanceId,
+            assistanceTypeId: params.assistanceTypeId,
             phoneDDD: params.phoneDDD,
             phone: params.phone,
             cellPhoneDDD: params.cellPhoneDDD,
@@ -62,7 +63,7 @@ export class StudentService implements IStudentService {
         try {
             const httpResponse: HttpResponse = await this.httpClient.request(httpRequest);
 
-            if (httpResponse.statusCode === HttpStatusCode.ok) {
+            if (httpResponse.statusCode === HttpStatusCode.created) {
                 return httpResponse.body;
             } else {
                 throw new Error('Falha ao criar estudante.');

@@ -3,8 +3,10 @@ import { StyledButton, StyledTextField } from "@/presentation/styles/styled-comp
 import { Box, FormHelperText } from "@mui/material";
 import { Form, Formik, FormikHelpers } from "formik";
 import React from "react";
-import { phoneMask } from "@/presentation/utils";
+import { phoneMask, removeNonNumeric } from "@/presentation/utils";
 import { validatePhone, validateCellPhone } from "../../../validations";
+import { IStudentService } from "@/domain/usecases/student-interface";
+import { StudentDTO } from "@/data/models/student-dto";
 
 type ContactError = {
     phone: string | null;
@@ -16,9 +18,11 @@ type Props = {
     setStudent: (student: any) => void;
     activeStep: number;
     setActiveStep: (activeStep: number) => void;
+    setEmailValidationPending: (emailValidationPending: boolean) => void;
+    studentService: IStudentService;
 };
 
-const ContactDataForm: React.FC<Props> = ({ student, setStudent, activeStep, setActiveStep }) => {
+const ContactDataForm: React.FC<Props> = ({ student, setStudent, activeStep, setActiveStep, setEmailValidationPending, studentService }) => {
 
     const [errors, setErrors] = React.useState<ContactError>();
 
@@ -39,10 +43,45 @@ const ContactDataForm: React.FC<Props> = ({ student, setStudent, activeStep, set
         setActiveStep(activeStep - 1);
     };
 
-    const handleSubmit = (_values: StudentViewModel, formikHelpers: FormikHelpers<StudentViewModel>) => {
+    function mapStudentViewModelToDTO(student: StudentViewModel): StudentDTO {
+        return {
+            name: student.name!,
+            CPF: student.CPF!,
+            email: student.email!,
+            password: student.password!,
+            birthDate: student.birthDate!,
+            RG: parseInt(removeNonNumeric(student.RG!)),
+            issuingAgency: student.issuingAgency!,
+            dispatchDate: student.dispatchDate!,
+            gender: student.gender!,
+            race: student.race!,
+            homeAddress: student.homeAddress!,
+            city: student.city!,
+            UF: student.UF!,
+            CEP: parseInt(removeNonNumeric(student.CEP!)),
+            registrationCode: student.registrationCode!,
+            campusId: student.campusId!,
+            courseId: student.courseId!,
+            startYear: student.startYear!,
+            assistanceTypeId: student.assistanceTypeId!,
+            phoneDDD: parseInt(student.phoneDDD!),
+            phone: parseInt(removeNonNumeric(student.phone!)),
+            cellPhoneDDD: parseInt(student.cellPhoneDDD!),
+            cellPhone: parseInt(removeNonNumeric(student.cellPhone!)),
+        };
+    }
+
+    const handleSubmit = async (_values: StudentViewModel, formikHelpers: FormikHelpers<StudentViewModel>) => {
         if (validateForm()) {
-            setActiveStep(activeStep + 1);
-            formikHelpers.setSubmitting(false);
+            try {
+                formikHelpers.setSubmitting(false);
+                const studentDTO = mapStudentViewModelToDTO(student);
+                const response = await studentService.add(studentDTO);
+                if (response)
+                    setEmailValidationPending(true);
+            } catch (error) {
+                console.error(error);
+            }
         }
     };
 
@@ -87,8 +126,8 @@ const ContactDataForm: React.FC<Props> = ({ student, setStudent, activeStep, set
                     onChange={handlePhoneChange}
                 />
                 {errors?.cellPhone && <FormHelperText error>{errors.cellPhone}</FormHelperText>}
-                <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                    <StyledButton variant="outlined" color="primary" type="button" onClick={goBack}>
+                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', pt: 2 }}>
+                    <StyledButton variant="outlined" onClick={goBack}>
                         Voltar
                     </StyledButton>
                     <StyledButton variant="contained" color="primary" type="submit">

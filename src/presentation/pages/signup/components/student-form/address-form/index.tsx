@@ -137,11 +137,11 @@ const AddressDataForm: React.FC<Props> = ({ student, setStudent, activeStep, set
                     onChange={handleCEPChange}
                 />
                 {errors?.CEP && <FormHelperText error>{errors.CEP}</FormHelperText>}
-                <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                    <StyledButton variant="outlined" color="primary" type="button" onClick={goBack}>
+                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', pt: 2 }}>
+                    <StyledButton variant="outlined" onClick={goBack}>
                         Voltar
                     </StyledButton>
-                    <StyledButton variant="contained" color="primary" type="submit">
+                    <StyledButton variant="contained" type="submit">
                         Avançar
                     </StyledButton>
                 </Box>

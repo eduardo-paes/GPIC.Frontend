@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { InputStyled, TokenInput, TokenInputContainer } from './styles';
 import { Box, Typography } from '@mui/material';
-import { StyledButton, Title } from '@/presentation/styles/styled-components';
+import { StyledButton, Subtitle, Title } from '@/presentation/styles/styled-components';
 import { IAuthService } from '@/domain/usecases/authentication-interface';
 
 type Props = {
@@ -25,16 +25,16 @@ const EmailConfirmationPage: React.FC<Props> = ({ authService, email }) => {
         setIsLoading(true);
         setTimeout(() => {
             setIsLoading(false);
-            navigate('/');
+            navigate('/login');
         }, 2000);
     }
 
     return (
         <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', padding: '2rem' }}>
-            <Title style={{ textAlign: "center" }} >Confirmação de E-mail</Title>
+            <Subtitle style={{ textAlign: "center", fontWeight: 'bold' }} >Confirmação de E-mail</Subtitle>
             <form onSubmit={handleSubmit}>
                 <TokenInputContainer>
-                    <label htmlFor="token">Insira o código enviado para o seu email institucional.</label>
+                    <p style={{ textAlign: "center", marginBottom: '1rem' }} >Insira o código enviado para o seu email institucional.</p>
                     <TokenInput>
                         <InputStyled
                             type="text"
@@ -46,7 +46,7 @@ const EmailConfirmationPage: React.FC<Props> = ({ authService, email }) => {
                         />
                     </TokenInput>
                 </TokenInputContainer>
-                <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
                     <StyledButton variant="contained" color="primary" type="submit" disabled={isLoading}>
                         {isLoading ? 'Carregando...' : 'Confirmar'}
                     </StyledButton>

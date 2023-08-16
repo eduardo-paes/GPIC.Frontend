@@ -40,7 +40,7 @@ const StyledCard = styled(Card)({
 	overflowY: "auto",
 	width: "500px",
 	boxShadow: "0px 1px 3px rgba(0, 0, 0, 0.2), 0px 2px 6px rgba(0, 0, 0, 0.1)",
-	padding: "1rem",
+	padding: "1.5rem",
 });
 
 const StyledContainer = styled("div")({

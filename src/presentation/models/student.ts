@@ -18,13 +18,14 @@ export interface StudentViewModel {
 	city?: string;
 	UF?: string;
 	CEP?: string;
+	registrationCode?: string;
 	campusId?: string;
 	courseId?: string;
 	startYear?: string;
 	//#endregion
 
 	//#region Base Student Contract (optional properties)
-	typeAssistanceId?: string;
+	assistanceTypeId?: string;
 	phoneDDD?: string;
 	phone?: string;
 	cellPhoneDDD?: string;

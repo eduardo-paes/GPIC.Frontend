@@ -4,7 +4,7 @@ import { HttpRequest, HttpResponse, HttpStatusCode, IHttpClient } from "@/infras
 import { ProfessorDTO } from "../models/professor-dto";
 
 /**
- * Classe que implementa a interface de adição de usuário.
+ * Classe que implementa a interface de adição de professor.
  * @class
  * @implements {IProfessorService}
  */
@@ -12,7 +12,7 @@ export class ProfessorService implements IProfessorService {
     /**
      * Cria uma instância de ProfessorService.
      * @constructor
-     * @param {string} url - A URL para adicionar um usuário.
+     * @param {string} url - A URL para adicionar um professor.
      * @param {IHttpClient} httpClient - O cliente HATEOAS para realizar as requisições.
      */
     constructor(
@@ -21,20 +21,19 @@ export class ProfessorService implements IProfessorService {
     ) { }
 
     /**
-     * Adiciona um usuário com base nos parâmetros fornecidos.
+     * Adiciona um professor com base nos parâmetros fornecidos.
      * @async
-     * @param {IProfessorService.AddParams} params - Os parâmetros para adicionar o usuário.
-     * @returns {Promise<Professor>} Uma promessa que resolve para o usuário adicionado.
+     * @param {IProfessorService.AddParams} params - Os parâmetros para adicionar o professor.
+     * @returns {Promise<Professor>} Uma promessa que resolve para o professor adicionado.
      */
     async add(params: IProfessorService.AddParams): Promise<Professor> {
         const professorDTO: ProfessorDTO = {
             name: params.name,
             CPF: params.CPF,
-            email: params.email + "@professor.cefet-rj.br",
+            email: params.email,
             password: params.password,
-            confirmPassword: params.confirmPassword,
-            SIAPE: params.SIAPE,
-            idLattes: params.idLattes
+            SIAPEEnrollment: params.SIAPEEnrollment,
+            identifyLattes: params.identifyLattes
         };
 
         const httpRequest: HttpRequest = {
@@ -43,14 +42,12 @@ export class ProfessorService implements IProfessorService {
             body: professorDTO
         };
 
-        console.log(httpRequest);
-
         try {
             const httpResponse: HttpResponse = await this.httpClient.request(httpRequest);
 
             console.log(httpResponse);
 
-            if (httpResponse.statusCode === HttpStatusCode.ok) {
+            if (httpResponse.statusCode === HttpStatusCode.created) {
                 return httpResponse.body;
             } else {
                 throw new Error('Falha ao criar professor.');

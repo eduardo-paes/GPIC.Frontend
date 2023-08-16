@@ -12,11 +12,7 @@ export class AuthenticationService implements IAuthService {
         const httpRequest: HttpRequest = {
             url: this.url + 'login',
             method: 'POST',
-            body: params,
-            headers: {
-                'accept': 'text/plain',
-                'Content-Type': 'application/json'
-            }
+            body: params
         };
 
         try {
@@ -35,8 +31,7 @@ export class AuthenticationService implements IAuthService {
 
     async confirmEmail(params: IAuthService.ConfirmEmailParams): Promise<string> {
         const httpRequest: HttpRequest = {
-            url: `${this.url}/confirmemail`,
-            body: params,
+            url: `${this.url}confirmemail?email=${params.email}&token=${params.token}`,
             method: 'POST'
         };
 

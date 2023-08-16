@@ -4,6 +4,6 @@ export interface Professor {
 	id: string;
 	user: User;
 	SIAPE: string;
-	idLattes: number;
+	identifyLattes: number;
 	deletedAt: Date;
 }

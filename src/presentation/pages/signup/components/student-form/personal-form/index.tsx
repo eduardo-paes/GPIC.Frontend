@@ -1,14 +1,14 @@
 import StudentViewModel from "@/presentation/models/student";
 import { StyledButton, StyledDateField, StyledSelectField, StyledTextField } from "@/presentation/styles/styled-components";
-import { Box, FormControl, FormHelperText, InputAdornment, InputLabel, MenuItem, SelectChangeEvent } from "@mui/material";
+import { cpfMask, rgMask } from "@/presentation/utils";
+import { Box, FormControl, FormHelperText, InputLabel, MenuItem, SelectChangeEvent } from "@mui/material";
 import { DateValidationError, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { FieldChangeHandler } from "@mui/x-date-pickers/internals";
 import { ptBR } from '@mui/x-date-pickers/locales';
 import { Form, Formik, FormikHelpers } from "formik";
 import React from "react";
-import { cpfMask, rgMask } from "@/presentation/utils";
-import { FieldChangeHandler } from "@mui/x-date-pickers/internals";
-import { validateBirthDate, validateCPF, validateConfirmPassword, validateDispatchDate, validateEmail, validateGender, validateIssuingAgency, validateName, validatePassword, validateRG, validateRace } from "../../../validations";
+import { validateBirthDate, validateCPF, validateConfirmPassword, validateDispatchDate, validateGender, validateIssuingAgency, validateName, validatePassword, validateRG, validateRace, validateStudentEmail } from "../../../validations";
 
 const GENDER_OPTIONS = [
     { value: '0', label: 'Masculino' },
@@ -112,7 +112,7 @@ const PersonalDataForm: React.FC<Props> = ({ student, setStudent, activeStep, se
     const validateForm = (): boolean => {
         const newErrors: PersonalError = {
             name: validateName(student.name),
-            email: validateEmail(student.email),
+            email: validateStudentEmail(student.email),
             CPF: validateCPF(student.CPF),
             RG: validateRG(student.RG),
             gender: validateGender(student.gender),
@@ -171,11 +171,8 @@ const PersonalDataForm: React.FC<Props> = ({ student, setStudent, activeStep, se
                 {errors?.CPF && <FormHelperText error>{errors.CPF}</FormHelperText>}
                 <StyledTextField
                     fullWidth
-                    label="Email"
+                    label="Email Institucional"
                     name="email"
-                    InputProps={{
-                        endAdornment: <InputAdornment position="end">@aluno.cefet-rj.br</InputAdornment>
-                    }}
                     value={student.email}
                     error={errors && errors.email !== null}
                     onChange={handleTextFieldChange}

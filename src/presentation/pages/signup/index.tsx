@@ -1,11 +1,14 @@
 import { Title, StyledCard, StyledContainer } from "@/presentation/styles/styled-components";
 import { CardContent, Tab, Tabs } from "@mui/material";
-import React, { useState } from "react";
+import React from "react";
 import { ProfessorForm } from "./components/professor-form";
 import { StudentForm } from "./components/student-form";
 import { IProfessorService } from "@/domain/usecases/professor-interface";
 import { IStudentService } from "@/domain/usecases/student-interface";
 import { IAuthService } from "@/domain/usecases/authentication-interface";
+import StudentViewModel from "@/presentation/models/student";
+import { ProfessorViewModel } from "@/presentation/models/professor";
+import EmailConfirmationPage from "./components/email-confirmation";
 
 type Props = {
     authService: IAuthService;
@@ -14,9 +17,15 @@ type Props = {
 }
 
 const SignUpPage: React.FC<Props> = ({ authService, professorService, studentService }) => {
-    const [selectedTab, setSelectedTab] = useState(0);
+    const [selectedTab, setSelectedTab] = React.useState<number>(0);
+    const [emailValidationPending, setEmailValidationPending] = React.useState<boolean>(false);
+    const [student, setStudent] = React.useState<StudentViewModel>({});
+    const [professor, setProfessor] = React.useState<ProfessorViewModel>({});
 
-    const handleTabChange = (event: React.SyntheticEvent, newValue: number) => setSelectedTab(newValue);
+    const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+        setEmailValidationPending(false);
+        setSelectedTab(newValue);
+    }
 
     return (
         <StyledContainer>
@@ -35,10 +44,25 @@ const SignUpPage: React.FC<Props> = ({ authService, professorService, studentSer
                         <Tab value={1} label="Aluno" />
                     </Tabs>
                     {
-                        !selectedTab
-                            ? <ProfessorForm authService={authService} professorService={professorService} />
-                            : <StudentForm authService={authService} studentService={studentService} />
-                    }
+                        !emailValidationPending ?
+                            (
+                                !selectedTab ?
+                                    <ProfessorForm
+                                        authService={authService}
+                                        professorService={professorService}
+                                        professor={professor}
+                                        setProfessor={setProfessor}
+                                        setEmailValidationPending={setEmailValidationPending}
+                                    /> :
+                                    <StudentForm
+                                        authService={authService}
+                                        studentService={studentService}
+                                        student={student}
+                                        setStudent={setStudent}
+                                        setEmailValidationPending={setEmailValidationPending}
+                                    />
+                            )
+                            : <EmailConfirmationPage authService={authService} email={!selectedTab ? professor.email! : student.email!} />}
                 </CardContent>
             </StyledCard>
         </StyledContainer>
