@@ -9,7 +9,7 @@ const MainLayout: React.FC<Props> = ({ children }) => {
     return (
         <>
             <TopBar />
-            <div style={{ padding: '1rem' }}>{children}</div>
+            <div style={{ padding: '1rem 2rem' }}>{children}</div>
         </>
     );
 };

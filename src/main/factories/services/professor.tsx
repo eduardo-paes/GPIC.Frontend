@@ -1,6 +1,6 @@
 import { IProfessorService } from "@/domain/usecases/professor-interface";
 import { ProfessorService } from "@/data/services/professor-service";
-import { ApiUrlFactory, AxiosHttpClientFactory } from "../http";
+import { ApiUrlFactory, AxiosHttpClientFactory, PublicHeaderFactory } from "../http";
 
 export const ProfessorServiceFactory = (): IProfessorService =>
-    new ProfessorService(ApiUrlFactory('professor/'), AxiosHttpClientFactory());
+    new ProfessorService(ApiUrlFactory('professor/'), AxiosHttpClientFactory(), PublicHeaderFactory());

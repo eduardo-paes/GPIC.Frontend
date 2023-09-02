@@ -1,5 +1,7 @@
+import { ActivityType } from "./activity-type";
+
 export interface Notice {
-	id?: string;
+	id: string;
 	registrationStartDate: Date;
 	registrationEndDate: Date;
 	evaluationStartDate: Date;
@@ -12,6 +14,7 @@ export interface Notice {
 	partialReportDeadline: Date;
 	finalReportDeadline: Date;
 	docUrl?: string;
+	activities: Array<ActivityType>;
 	description?: string;
 	deletedAt?: Date;
 }

@@ -2,7 +2,7 @@ import {
 	IHttpClient,
 	HttpRequest,
 	HttpResponse,
-} from "@/infrastructure/data/protocols/http";
+} from "@/infrastructure/interfaces/protocols";
 import axios, { AxiosResponse } from "axios";
 
 export class AxiosHttpClient implements IHttpClient {

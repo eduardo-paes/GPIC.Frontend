@@ -1,4 +1,4 @@
-import { AxiosHttpClient } from "@/infrastructure/http";
+import { AxiosHttpClient } from "@/infrastructure/data/protocols";
 
 export const AxiosHttpClientFactory = (): AxiosHttpClient =>
-  new AxiosHttpClient();
+	new AxiosHttpClient();

@@ -9,14 +9,16 @@ import { IAuthService } from "@/domain/usecases/authentication-interface";
 import StudentViewModel from "@/presentation/models/student";
 import { ProfessorViewModel } from "@/presentation/models/professor";
 import EmailConfirmationPage from "./components/email-confirmation";
+import { ICEPService } from "@/infrastructure/interfaces/services/cep-service";
 
 type Props = {
     authService: IAuthService;
     professorService: IProfessorService;
     studentService: IStudentService;
+    cepService: ICEPService;
 }
 
-const SignUpPage: React.FC<Props> = ({ authService, professorService, studentService }) => {
+const SignUpPage: React.FC<Props> = ({ authService, professorService, studentService, cepService }) => {
     const [selectedTab, setSelectedTab] = React.useState<number>(0);
     const [emailValidationPending, setEmailValidationPending] = React.useState<boolean>(false);
     const [student, setStudent] = React.useState<StudentViewModel>({});
@@ -57,6 +59,7 @@ const SignUpPage: React.FC<Props> = ({ authService, professorService, studentSer
                                     <StudentForm
                                         authService={authService}
                                         studentService={studentService}
+                                        cepService={cepService}
                                         student={student}
                                         setStudent={setStudent}
                                         setEmailValidationPending={setEmailValidationPending}

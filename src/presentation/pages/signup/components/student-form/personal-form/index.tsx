@@ -8,7 +8,7 @@ import { FieldChangeHandler } from "@mui/x-date-pickers/internals";
 import { ptBR } from '@mui/x-date-pickers/locales';
 import { Form, Formik, FormikHelpers } from "formik";
 import React from "react";
-import { validateBirthDate, validateCPF, validateConfirmPassword, validateDispatchDate, validateGender, validateIssuingAgency, validateName, validatePassword, validateRG, validateRace, validateStudentEmail } from "../../../validations";
+import { validateBirthDate, validateCPF, validateConfirmPassword, validateDispatchDate, validateEmail, validateGender, validateIssuingAgency, validateName, validatePassword, validateRG, validateRace, validateStudentEmail } from "../../../validations";
 
 const GENDER_OPTIONS = [
     { value: '0', label: 'Masculino' },
@@ -77,7 +77,7 @@ const PersonalDataForm: React.FC<Props> = ({ student, setStudent, activeStep, se
 
     const handleRGChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = event.target;
-        if (value.length < 14)
+        if (value.length < 13)
             setStudent((prevStudent: any) => ({
                 ...prevStudent,
                 RG: rgMask(value),
@@ -112,7 +112,7 @@ const PersonalDataForm: React.FC<Props> = ({ student, setStudent, activeStep, se
     const validateForm = (): boolean => {
         const newErrors: PersonalError = {
             name: validateName(student.name),
-            email: validateStudentEmail(student.email),
+            email: validateEmail(student.email),
             CPF: validateCPF(student.CPF),
             RG: validateRG(student.RG),
             gender: validateGender(student.gender),
@@ -151,6 +151,7 @@ const PersonalDataForm: React.FC<Props> = ({ student, setStudent, activeStep, se
         >
             <Form>
                 <StyledTextField
+                    sx={{ marginTop: '1rem' }}
                     fullWidth
                     type="text"
                     label="Nome"
@@ -161,6 +162,7 @@ const PersonalDataForm: React.FC<Props> = ({ student, setStudent, activeStep, se
                 />
                 {errors?.name && <FormHelperText error>{errors.name}</FormHelperText>}
                 <StyledTextField
+                    sx={{ marginTop: '1rem' }}
                     fullWidth
                     type="text"
                     label="CPF"
@@ -170,8 +172,9 @@ const PersonalDataForm: React.FC<Props> = ({ student, setStudent, activeStep, se
                 />
                 {errors?.CPF && <FormHelperText error>{errors.CPF}</FormHelperText>}
                 <StyledTextField
+                    sx={{ marginTop: '1rem' }}
                     fullWidth
-                    label="Email Institucional"
+                    label="Email"
                     name="email"
                     value={student.email}
                     error={errors && errors.email !== null}
@@ -190,6 +193,7 @@ const PersonalDataForm: React.FC<Props> = ({ student, setStudent, activeStep, se
                 </LocalizationProvider>
                 {errors?.birthDate && <FormHelperText error>{errors.birthDate}</FormHelperText>}
                 <StyledTextField
+                    sx={{ marginTop: '1rem' }}
                     fullWidth
                     type="text"
                     label="RG"
@@ -199,6 +203,7 @@ const PersonalDataForm: React.FC<Props> = ({ student, setStudent, activeStep, se
                 />
                 {errors?.RG && <FormHelperText error>{errors.RG}</FormHelperText>}
                 <StyledTextField
+                    sx={{ marginTop: '1rem' }}
                     fullWidth
                     label="Órgão Emissor"
                     name="issuingAgency"
@@ -257,6 +262,7 @@ const PersonalDataForm: React.FC<Props> = ({ student, setStudent, activeStep, se
                 </FormControl>
                 {errors?.race && <FormHelperText error>{errors.race}</FormHelperText>}
                 <StyledTextField
+                    sx={{ marginTop: '1rem' }}
                     type="password"
                     fullWidth
                     label="Senha"
@@ -267,6 +273,7 @@ const PersonalDataForm: React.FC<Props> = ({ student, setStudent, activeStep, se
                 />
                 {errors?.password && <FormHelperText error>{errors.password}</FormHelperText>}
                 <StyledTextField
+                    sx={{ marginTop: '1rem' }}
                     type="password"
                     fullWidth
                     label="Confirmar senha"

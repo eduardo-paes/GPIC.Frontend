@@ -9,7 +9,7 @@ import {
     MenuItem,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import GPICLogo from '@/presentation/assets/logo.png';
+import GPICLogo from '@/presentation/assets/logo-gpic-white.svg';
 import { useNavigate } from 'react-router-dom';
 
 const TopBar: React.FC = () => {
@@ -30,7 +30,7 @@ const TopBar: React.FC = () => {
     };
 
     const handleLogout = () => {
-        localStorage.removeItem('jwtToken');
+        sessionStorage.removeItem('jwtToken');
         navigate('/login');
     };
 
@@ -41,7 +41,6 @@ const TopBar: React.FC = () => {
                     src={GPICLogo}
                     alt="Gerenciamento de Projetos de Iniciação Científica"
                     width={160}
-                    style={{ backgroundColor: 'white', borderRadius: '1rem' }}
                 />
 
                 <IconButton

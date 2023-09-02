@@ -7,7 +7,7 @@ type Props = {
 const HomePage: React.FC<Props> = () => {
     return (
         <MainLayout>
-            <>Home</>
+            <>Meus Projetos</>
         </MainLayout>
     );
 };

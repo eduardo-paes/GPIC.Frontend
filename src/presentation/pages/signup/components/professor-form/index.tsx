@@ -9,6 +9,9 @@ import { StyledButton } from "@/presentation/styles/styled-components";
 import { cpfMask } from "@/presentation/utils";
 import { Box, FormHelperText } from "@mui/material";
 import { validateCPF, validateConfirmPassword, validateProfessorEmail, validateIdLattes, validateName, validatePassword, validateSIAPE } from "../../validations";
+import FeedbackMessage from "@/presentation/components/feedback-snackbar";
+import { Feedback } from "@/presentation/models/feedback";
+import Loading from "@/presentation/components/loading";
 
 type ProfessorError = {
     name: string | null;
@@ -31,7 +34,9 @@ interface Props {
 export const ProfessorForm: React.FC<Props> = ({ authService, professorService, professor, setProfessor, setEmailValidationPending }) => {
 
     const [errors, setErrors] = React.useState<ProfessorError>();
-    const [buttonDisable, setButtonDisable] = React.useState<boolean>(false);
+    const [isLoading, setIsLoading] = React.useState<boolean>(false);
+    const [feedback, setFeedback] = React.useState<Feedback>();
+    const [openFeedback, setOpenFeedback] = React.useState<boolean>(false);
 
     const handleTextFieldChange = React.useCallback(
         (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -97,17 +102,21 @@ export const ProfessorForm: React.FC<Props> = ({ authService, professorService, 
     const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
+        setIsLoading(true);
         if (validateForm()) {
             try {
-                setButtonDisable(true);
                 const professorDTO = mapProfessorViewModelToDTO(professor);
                 await professorService.add(professorDTO);
                 setEmailValidationPending(true);
+                setFeedback({ message: 'Usuário criado com sucesso.', type: 'success' });
             } catch (error) {
                 console.error(error);
-                setButtonDisable(false);
+                setFeedback({ message: 'Não foi possível criar o usuário. Verifique os campos e tente novamente.', type: 'error' });
+            } finally {
+                setOpenFeedback(true);
             }
         }
+        setIsLoading(false);
     };
 
     const validateForm = (): boolean => {
@@ -138,8 +147,9 @@ export const ProfessorForm: React.FC<Props> = ({ authService, professorService, 
     };
 
     return (
-        <Form onSubmit={handleFormSubmit}>
+        <Form onSubmit={handleFormSubmit} sx={{ gap: 1 }}>
             <StyledTextField
+                fullWidth
                 label="Nome"
                 name="name"
                 value={professor.name}
@@ -149,6 +159,7 @@ export const ProfessorForm: React.FC<Props> = ({ authService, professorService, 
 
             {errors?.name && <FormHelperText error>{errors.name}</FormHelperText>}
             <StyledTextField
+                fullWidth
                 label="CPF"
                 type="text"
                 name="CPF"
@@ -159,6 +170,7 @@ export const ProfessorForm: React.FC<Props> = ({ authService, professorService, 
 
             {errors?.CPF && <FormHelperText error>{errors.CPF}</FormHelperText>}
             <StyledTextField
+                fullWidth
                 label="Email Institucional"
                 type="text"
                 name="email"
@@ -169,6 +181,7 @@ export const ProfessorForm: React.FC<Props> = ({ authService, professorService, 
 
             {errors?.email && <FormHelperText error>{errors.email}</FormHelperText>}
             <StyledTextField
+                fullWidth
                 label="Senha"
                 type="password"
                 name="password"
@@ -179,6 +192,7 @@ export const ProfessorForm: React.FC<Props> = ({ authService, professorService, 
 
             {errors?.password && <FormHelperText error>{errors.password}</FormHelperText>}
             <StyledTextField
+                fullWidth
                 label="Confirmação de senha"
                 type="password"
                 variant="outlined"
@@ -190,6 +204,7 @@ export const ProfessorForm: React.FC<Props> = ({ authService, professorService, 
 
             {errors?.confirmPassword && <FormHelperText error>{errors.confirmPassword}</FormHelperText>}
             <StyledTextField
+                fullWidth
                 label="SIAPE"
                 type="text"
                 name="SIAPEEnrollment"
@@ -201,6 +216,7 @@ export const ProfessorForm: React.FC<Props> = ({ authService, professorService, 
 
             {errors?.SIAPE && <FormHelperText error>{errors.SIAPE}</FormHelperText>}
             <StyledTextField
+                fullWidth
                 label="Identificador Lattes"
                 type="text"
                 name="identifyLattes"
@@ -216,10 +232,12 @@ export const ProfessorForm: React.FC<Props> = ({ authService, professorService, 
                 <StyledButton variant="outlined" color="primary" type="button" onClick={goBack}>
                     Voltar
                 </StyledButton>
-                <StyledButton disabled={buttonDisable} variant="contained" color="primary" type="submit">
+                <StyledButton disabled={isLoading} variant="contained" color="primary" type="submit">
                     Avançar
                 </StyledButton>
             </Box>
+            {feedback && <FeedbackMessage open={openFeedback} handleClose={() => setOpenFeedback(false)} feedback={feedback!} />}
+            <Loading isLoading={isLoading} />
         </Form>
     );
 };

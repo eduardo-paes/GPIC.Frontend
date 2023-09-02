@@ -1,25 +1,27 @@
-import { HttpRequest, HttpResponse, HttpStatusCode, IHttpClient } from "@/infrastructure/data/protocols/http";
+import { HttpRequest, HttpResponse, HttpStatusCode, IHttpClient } from "@/infrastructure/interfaces/protocols";
 import { IAuthService } from "../../domain/usecases/authentication-interface";
 import { UserLogin } from "@/domain/models/user-login";
 
 export class AuthenticationService implements IAuthService {
     constructor(
         private readonly url: string,
-        private readonly httpClient: IHttpClient
+        private readonly httpClient: IHttpClient,
+        private readonly publicHeader: Record<string, string>
     ) { }
 
     async login(params: IAuthService.LoginParams): Promise<UserLogin> {
         const httpRequest: HttpRequest = {
             url: this.url + 'login',
             method: 'POST',
-            body: params
+            body: params,
+            headers: this.publicHeader
         };
 
         try {
             const httpResponse: HttpResponse = await this.httpClient.request(httpRequest);
 
             if (httpResponse.statusCode === HttpStatusCode.ok) {
-                localStorage.setItem('jwtToken', httpResponse.body.token);
+                sessionStorage.setItem('jwtToken', httpResponse.body.token);
                 return httpResponse.body;
             } else {
                 throw new Error('Falha ao realizar o login');
@@ -32,7 +34,8 @@ export class AuthenticationService implements IAuthService {
     async confirmEmail(params: IAuthService.ConfirmEmailParams): Promise<string> {
         const httpRequest: HttpRequest = {
             url: `${this.url}confirmemail?email=${params.email}&token=${params.token}`,
-            method: 'POST'
+            method: 'POST',
+            headers: this.publicHeader
         };
 
         try {
@@ -52,7 +55,8 @@ export class AuthenticationService implements IAuthService {
         const response = await this.httpClient.request({
             url: `${this.url}forgotpassword`,
             method: 'POST',
-            body: { email: params.email }
+            body: { email: params.email },
+            headers: this.publicHeader
         });
 
         if (response.statusCode === HttpStatusCode.ok) {
@@ -67,7 +71,8 @@ export class AuthenticationService implements IAuthService {
         const response = await this.httpClient.request({
             url: `${this.url}/resetpassword`,
             method: 'POST',
-            body: params
+            body: params,
+            headers: this.publicHeader
         });
 
         if (response.statusCode === HttpStatusCode.ok)

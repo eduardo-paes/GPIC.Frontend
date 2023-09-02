@@ -7,6 +7,9 @@ import { phoneMask, removeNonNumeric } from "@/presentation/utils";
 import { validatePhone, validateCellPhone } from "../../../validations";
 import { IStudentService } from "@/domain/usecases/student-interface";
 import { StudentDTO } from "@/data/models/student-dto";
+import FeedbackMessage from "@/presentation/components/feedback-snackbar";
+import { Feedback } from "@/presentation/models/feedback";
+import Loading from "@/presentation/components/loading";
 
 type ContactError = {
     phone: string | null;
@@ -25,6 +28,9 @@ type Props = {
 const ContactDataForm: React.FC<Props> = ({ student, setStudent, activeStep, setActiveStep, setEmailValidationPending, studentService }) => {
 
     const [errors, setErrors] = React.useState<ContactError>();
+    const [isLoading, setIsLoading] = React.useState<boolean>(false);
+    const [feedback, setFeedback] = React.useState<Feedback>();
+    const [openFeedback, setOpenFeedback] = React.useState<boolean>(false);
 
     const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
@@ -64,25 +70,31 @@ const ContactDataForm: React.FC<Props> = ({ student, setStudent, activeStep, set
             courseId: student.courseId!,
             startYear: student.startYear!,
             assistanceTypeId: student.assistanceTypeId!,
-            phoneDDD: parseInt(student.phoneDDD!),
-            phone: parseInt(removeNonNumeric(student.phone!)),
-            cellPhoneDDD: parseInt(student.cellPhoneDDD!),
-            cellPhone: parseInt(removeNonNumeric(student.cellPhone!)),
+            phoneDDD: student.phoneDDD ? parseInt(student.phoneDDD!) : undefined,
+            phone: student.phone ? parseInt(removeNonNumeric(student.phone!)) : undefined,
+            cellPhoneDDD: student.cellPhoneDDD ? parseInt(student.cellPhoneDDD!) : undefined,
+            cellPhone: student.cellPhone ? parseInt(removeNonNumeric(student.cellPhone!)) : undefined,
         };
     }
 
     const handleSubmit = async (_values: StudentViewModel, formikHelpers: FormikHelpers<StudentViewModel>) => {
+        setIsLoading(true);
         if (validateForm()) {
             try {
                 formikHelpers.setSubmitting(false);
                 const studentDTO = mapStudentViewModelToDTO(student);
                 const response = await studentService.add(studentDTO);
-                if (response)
+                if (response) {
+                    setFeedback({ message: 'Usuário criado com sucesso.', type: 'success' });
                     setEmailValidationPending(true);
+                }
             } catch (error) {
                 console.error(error);
+                setFeedback({ message: 'Não foi possível criar o usuário. Verifique os campos e tente novamente.', type: 'error' });
             }
         }
+        setIsLoading(false);
+        setOpenFeedback(true);
     };
 
     const validateForm = (): boolean => {
@@ -103,39 +115,45 @@ const ContactDataForm: React.FC<Props> = ({ student, setStudent, activeStep, set
     };
 
     return (
-        <Formik
-            initialValues={student}
-            onSubmit={handleSubmit}
-        >
-            <Form>
-                <StyledTextField
-                    fullWidth
-                    name='phone'
-                    label="Telefone"
-                    value={student.phone}
-                    error={errors && errors.phone !== null}
-                    onChange={handlePhoneChange}
-                />
-                {errors?.phone && <FormHelperText error>{errors.phone}</FormHelperText>}
-                <StyledTextField
-                    fullWidth
-                    name='cellPhone'
-                    label="Celular"
-                    value={student.cellPhone}
-                    error={errors && errors.cellPhone !== null}
-                    onChange={handlePhoneChange}
-                />
-                {errors?.cellPhone && <FormHelperText error>{errors.cellPhone}</FormHelperText>}
-                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', pt: 2 }}>
-                    <StyledButton variant="outlined" onClick={goBack}>
-                        Voltar
-                    </StyledButton>
-                    <StyledButton variant="contained" color="primary" type="submit">
-                        Cadastrar
-                    </StyledButton>
-                </Box>
-            </Form>
-        </Formik>
+        <>
+            <Formik
+                initialValues={student}
+                onSubmit={handleSubmit}
+            >
+                <Form>
+                    <StyledTextField
+                        fullWidth
+                        name='phone'
+                        label="Telefone"
+                        value={student.phone}
+                        error={errors && errors.phone !== null}
+                        onChange={handlePhoneChange}
+                        sx={{ marginTop: '1rem' }}
+                    />
+                    {errors?.phone && <FormHelperText error>{errors.phone}</FormHelperText>}
+                    <StyledTextField
+                        fullWidth
+                        name='cellPhone'
+                        label="Celular"
+                        value={student.cellPhone}
+                        error={errors && errors.cellPhone !== null}
+                        onChange={handlePhoneChange}
+                        sx={{ marginTop: '1rem' }}
+                    />
+                    {errors?.cellPhone && <FormHelperText error>{errors.cellPhone}</FormHelperText>}
+                    <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', pt: 2 }}>
+                        <StyledButton variant="outlined" onClick={goBack}>
+                            Voltar
+                        </StyledButton>
+                        <StyledButton disabled={isLoading} variant="contained" color="primary" type="submit">
+                            Cadastrar
+                        </StyledButton>
+                    </Box>
+                </Form>
+            </Formik>
+            {feedback && <FeedbackMessage open={openFeedback} handleClose={() => setOpenFeedback(false)} feedback={feedback!} />}
+            <Loading isLoading={isLoading} />
+        </>
     );
 };
 

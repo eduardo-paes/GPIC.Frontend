@@ -7,7 +7,7 @@ interface Props {
 }
 
 const PrivateRoute: React.FC<Props> = ({ isAllowed, redirectTo = "/login", children }) => {
-    if (!isAllowed && !localStorage.getItem('jwtToken'))
+    if (!isAllowed && !sessionStorage.getItem('jwtToken'))
         return <Navigate to={redirectTo} replace />;
 
     return children ? children : <Outlet />;

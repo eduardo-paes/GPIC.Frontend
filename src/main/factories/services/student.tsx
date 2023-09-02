@@ -1,6 +1,6 @@
 import { IStudentService } from "@/domain/usecases/student-interface";
 import { StudentService } from "@/data/services/student-service";
-import { ApiUrlFactory, AxiosHttpClientFactory } from "../http";
+import { ApiUrlFactory, AxiosHttpClientFactory, PublicHeaderFactory } from "../http";
 
 export const StudentServiceFactory = (): IStudentService =>
-    new StudentService(ApiUrlFactory('student/'), AxiosHttpClientFactory());
+    new StudentService(ApiUrlFactory('student/'), AxiosHttpClientFactory(), PublicHeaderFactory());

@@ -1,3 +1,5 @@
+import { ActivityTypeDTO } from "./activity-type-dto";
+
 export interface NoticeDTO {
 	id?: string;
 	registrationStartDate: Date;
@@ -11,7 +13,8 @@ export interface NoticeDTO {
 	suspensionYears: number;
 	partialReportDeadline: Date;
 	finalReportDeadline: Date;
-	docUrl?: string;
+	attachedFile?: File | string;
+	activities: Array<ActivityTypeDTO>;
 	description?: string;
 	deletedAt?: Date;
 }

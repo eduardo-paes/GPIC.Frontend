@@ -39,7 +39,7 @@ export const validateCPF = (CPF: string | undefined): string | null => {
 export const validateRG = (RG: string | undefined): string | null => {
 	if (!RG) return "Campo obrigatório";
 
-	if (!/^\d{3}\.\d{3}\.\d{3}-\d{1}$/.test(RG)) return "RG inválido";
+	if (!/^\d{2}\.\d{3}\.\d{3}-\d{1}$/.test(RG)) return "RG inválido";
 
 	return null;
 };
@@ -188,8 +188,6 @@ export const validateCellPhone = (
 };
 
 export const validateSIAPE = (SIAPE: string | undefined): string | null => {
-	console.log(SIAPE);
-
 	if (!SIAPE) return "Campo obrigatório";
 	if (SIAPE.length < 7) return "A Matrícula SIAPE deve conter 7 caracteres.";
 
@@ -199,8 +197,6 @@ export const validateSIAPE = (SIAPE: string | undefined): string | null => {
 export const validateIdLattes = (
 	identifyLattes: string | undefined
 ): string | null => {
-	console.log(identifyLattes);
-
 	if (!identifyLattes) return "Campo obrigatório";
 
 	return null;
