@@ -9,6 +9,9 @@ import { StyledButton } from "@/presentation/styles/styled-components";
 import { cpfMask } from "@/presentation/utils";
 import { Box, FormHelperText } from "@mui/material";
 import { validateCPF, validateConfirmPassword, validateProfessorEmail, validateIdLattes, validateName, validatePassword, validateSIAPE } from "../../validations";
+import FeedbackMessage from "@/presentation/components/feedback-snackbar";
+import { Feedback } from "@/presentation/models/feedback";
+import Loading from "@/presentation/components/loading";
 
 type ProfessorError = {
     name: string | null;
@@ -31,7 +34,9 @@ interface Props {
 export const ProfessorForm: React.FC<Props> = ({ authService, professorService, professor, setProfessor, setEmailValidationPending }) => {
 
     const [errors, setErrors] = React.useState<ProfessorError>();
-    const [buttonDisable, setButtonDisable] = React.useState<boolean>(false);
+    const [isLoading, setIsLoading] = React.useState<boolean>(false);
+    const [feedback, setFeedback] = React.useState<Feedback>();
+    const [openFeedback, setOpenFeedback] = React.useState<boolean>(false);
 
     const handleTextFieldChange = React.useCallback(
         (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -99,13 +104,16 @@ export const ProfessorForm: React.FC<Props> = ({ authService, professorService, 
 
         if (validateForm()) {
             try {
-                setButtonDisable(true);
                 const professorDTO = mapProfessorViewModelToDTO(professor);
                 await professorService.add(professorDTO);
                 setEmailValidationPending(true);
+                setFeedback({ message: 'Usuário criado com sucesso.', type: 'success' });
             } catch (error) {
                 console.error(error);
-                setButtonDisable(false);
+                setFeedback({ message: 'Não foi possível criar o usuário. Verifique os campos e tente novamente.', type: 'error' });
+            } finally {
+                setOpenFeedback(true);
+                setIsLoading(false);
             }
         }
     };
@@ -216,10 +224,12 @@ export const ProfessorForm: React.FC<Props> = ({ authService, professorService, 
                 <StyledButton variant="outlined" color="primary" type="button" onClick={goBack}>
                     Voltar
                 </StyledButton>
-                <StyledButton disabled={buttonDisable} variant="contained" color="primary" type="submit">
+                <StyledButton disabled={isLoading} variant="contained" color="primary" type="submit">
                     Avançar
                 </StyledButton>
             </Box>
+            {feedback && <FeedbackMessage open={openFeedback} handleClose={() => setOpenFeedback(false)} feedback={feedback!} />}
+            <Loading isLoading={isLoading} />
         </Form>
     );
 };

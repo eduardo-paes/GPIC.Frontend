@@ -4,6 +4,9 @@ import { InputStyled, TokenInput, TokenInputContainer } from './styles';
 import { Box, Typography } from '@mui/material';
 import { StyledButton, Subtitle, Title } from '@/presentation/styles/styled-components';
 import { IAuthService } from '@/domain/usecases/authentication-interface';
+import Loading from '@/presentation/components/loading';
+import { Feedback } from '@/presentation/models/feedback';
+import FeedbackMessage from '@/presentation/components/feedback-snackbar';
 
 type Props = {
     authService: IAuthService;
@@ -13,6 +16,8 @@ type Props = {
 const EmailConfirmationPage: React.FC<Props> = ({ authService, email }) => {
     const [token, setToken] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [feedback, setFeedback] = React.useState<Feedback>();
+    const [openFeedback, setOpenFeedback] = React.useState<boolean>(false);
     const navigate = useNavigate();
 
     const handleChangeToken = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,12 +26,16 @@ const EmailConfirmationPage: React.FC<Props> = ({ authService, email }) => {
 
     async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
-        await authService.confirmEmail({ token, email })
         setIsLoading(true);
-        setTimeout(() => {
+        try {
+            await authService.confirmEmail({ token, email })
             setIsLoading(false);
+            setFeedback({ message: "E-mail confirmado com sucesso.", type: "success" });
             navigate('/login');
-        }, 2000);
+        } catch (error) {
+            console.error(error);
+            setFeedback({ message: "Não foi possível confirmar o e-mail.", type: "error" });
+        }
     }
 
     return (
@@ -51,6 +60,8 @@ const EmailConfirmationPage: React.FC<Props> = ({ authService, email }) => {
                         {isLoading ? 'Carregando...' : 'Confirmar'}
                     </StyledButton>
                 </Box>
+                {feedback && <FeedbackMessage open={openFeedback} handleClose={() => setOpenFeedback(false)} feedback={feedback!} />}
+                <Loading isLoading={isLoading} />
             </form>
         </div>
     );

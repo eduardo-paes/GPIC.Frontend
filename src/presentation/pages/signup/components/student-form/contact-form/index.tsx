@@ -7,6 +7,9 @@ import { phoneMask, removeNonNumeric } from "@/presentation/utils";
 import { validatePhone, validateCellPhone } from "../../../validations";
 import { IStudentService } from "@/domain/usecases/student-interface";
 import { StudentDTO } from "@/data/models/student-dto";
+import FeedbackMessage from "@/presentation/components/feedback-snackbar";
+import { Feedback } from "@/presentation/models/feedback";
+import Loading from "@/presentation/components/loading";
 
 type ContactError = {
     phone: string | null;
@@ -25,6 +28,9 @@ type Props = {
 const ContactDataForm: React.FC<Props> = ({ student, setStudent, activeStep, setActiveStep, setEmailValidationPending, studentService }) => {
 
     const [errors, setErrors] = React.useState<ContactError>();
+    const [isLoading, setIsLoading] = React.useState<boolean>(false);
+    const [feedback, setFeedback] = React.useState<Feedback>();
+    const [openFeedback, setOpenFeedback] = React.useState<boolean>(false);
 
     const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
@@ -72,17 +78,23 @@ const ContactDataForm: React.FC<Props> = ({ student, setStudent, activeStep, set
     }
 
     const handleSubmit = async (_values: StudentViewModel, formikHelpers: FormikHelpers<StudentViewModel>) => {
+        setIsLoading(true);
         if (validateForm()) {
             try {
                 formikHelpers.setSubmitting(false);
                 const studentDTO = mapStudentViewModelToDTO(student);
                 const response = await studentService.add(studentDTO);
-                if (response)
+                if (response) {
+                    setFeedback({ message: 'Usuário criado com sucesso.', type: 'success' });
                     setEmailValidationPending(true);
+                }
             } catch (error) {
                 console.error(error);
+                setFeedback({ message: 'Não foi possível criar o usuário. Verifique os campos e tente novamente.', type: 'error' });
             }
         }
+        setIsLoading(false);
+        setOpenFeedback(true);
     };
 
     const validateForm = (): boolean => {
@@ -130,11 +142,13 @@ const ContactDataForm: React.FC<Props> = ({ student, setStudent, activeStep, set
                     <StyledButton variant="outlined" onClick={goBack}>
                         Voltar
                     </StyledButton>
-                    <StyledButton variant="contained" color="primary" type="submit">
+                    <StyledButton disabled={isLoading} variant="contained" color="primary" type="submit">
                         Cadastrar
                     </StyledButton>
                 </Box>
             </Form>
+            {feedback && <FeedbackMessage open={openFeedback} handleClose={() => setOpenFeedback(false)} feedback={feedback!} />}
+            <Loading isLoading={isLoading} />
         </Formik>
     );
 };

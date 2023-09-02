@@ -1,5 +1,5 @@
 import { IAuthService } from "@/domain/usecases/authentication-interface";
-import GPICLogo from "@/presentation/assets/logo.png";
+import GPICLogo from "@/presentation/assets/logo-gpic-original.svg";
 import { validateEmail, validatePassword } from "@/presentation/pages/signup/validations";
 import { Form, Paragraph, StyledButton, StyledCard, StyledTextField, Subtitle } from "@/presentation/styles/styled-components";
 import {
@@ -70,7 +70,7 @@ export const LoginForm: React.FC<Props> = ({ authService }) => {
         <StyledCard>
             <CardMedia
                 component="img"
-                sx={{ position: 'relative', left: '50%', transform: 'translateX(-50%)', height: 100, width: '60%' }}
+                sx={{ position: 'relative', left: '50%', transform: 'translateX(-50%)', height: 'auto', width: '60%' }}
                 image={GPICLogo}
                 alt="GPIC Logo"
             />
@@ -78,6 +78,7 @@ export const LoginForm: React.FC<Props> = ({ authService }) => {
             <CardContent>
                 <Form onSubmit={handleFormSubmit}>
                     <StyledTextField
+                        fullWidth
                         label="Email"
                         variant="outlined"
                         value={email}
@@ -86,6 +87,7 @@ export const LoginForm: React.FC<Props> = ({ authService }) => {
                     />
                     {errors?.email && <FormHelperText error>{errors.email}</FormHelperText>}
                     <StyledTextField
+                        fullWidth
                         label="Senha"
                         variant="outlined"
                         type="password"
@@ -93,6 +95,7 @@ export const LoginForm: React.FC<Props> = ({ authService }) => {
                         autoComplete=""
                         onChange={handlePasswordChange}
                         error={errors && errors.password !== null}
+                        sx={{ marginTop: '0.5rem' }}
                     />
                     {errors?.password && <FormHelperText error>{errors.password}</FormHelperText>}
                     <StyledButton variant="contained" type="submit">
