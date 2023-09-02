@@ -1,7 +1,8 @@
 import { IActivityService } from '@/domain/usecases/activity-interface';
 import ActivityComponent from '@/presentation/components/activity';
 import { NoticeViewModel } from '@/presentation/models/notice';
-import { Paragraph, StyledButton, StyledTextField } from '@/presentation/styles/styled-components';
+import { colors } from '@/presentation/styles/colors';
+import { InputStack, Paragraph, StyledButton, StyledTextField } from '@/presentation/styles/styled-components';
 import { formatDateToISOString } from '@/presentation/utils';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import {
@@ -249,13 +250,17 @@ const NoticeForm: React.FC<Props> = ({ initialValues, data, setData, activitySer
                     </Grid>
                     {/* PDF do Edital */}
                     <Grid item xs={12} sm={6}>
-                        <Stack direction="column" alignItems="center">
-                            <StyledButton sx={{ height: '3rem' }} fullWidth variant="outlined" component="label" startIcon={<AttachFileIcon />}>
+                        <label style={{ cursor: 'pointer' }} htmlFor="noticePdf">
+                            <InputStack direction="row" justifyContent={'center'} alignItems="center">
+                                <AttachFileIcon />
                                 Anexar Arquivo
-                                <input onChange={handleFileChange} hidden accept=".pdf" type="file" />
-                            </StyledButton>
-                            <Paragraph>{filename}</Paragraph>
-                        </Stack>
+
+                            </InputStack>
+                        </label>
+                        <input id='noticePdf' onChange={handleFileChange} hidden accept=".pdf" type="file" />
+                        {/* <StyledButton sx={{ height: '3rem' }} fullWidth variant="outlined" startIcon={<AttachFileIcon />}>
+                        </StyledButton> */}
+                        <Paragraph>{filename}</Paragraph>
                     </Grid>
                 </Grid>
             </Grid>
