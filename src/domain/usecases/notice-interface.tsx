@@ -1,3 +1,4 @@
+import { ActivityType } from "../models/activity-type";
 import { Notice } from "../models/notice";
 
 /**
@@ -73,7 +74,9 @@ export namespace INoticeService {
         suspensionYears: number;
         partialReportDeadline: Date;
         finalReportDeadline: Date;
-        docUrl: string;
+        activities: Array<ActivityType>;
+        attachedFile?: File | string;
+        description?: string;
     };
 
     /**
@@ -93,9 +96,10 @@ export namespace INoticeService {
         suspensionYears: number;
         partialReportDeadline: Date;
         finalReportDeadline: Date;
-        docUrl?: string;
+        attachedFile?: File | string;
         description?: string;
         deletedAt?: Date;
+        activities?: Array<ActivityType>;
     };
 
     /**

@@ -1,7 +1,6 @@
 import { Notice } from "@/domain/models/notice";
 import { INoticeService } from "@/domain/usecases/notice-interface";
-import { HttpRequest, HttpResponse, HttpStatusCode, IHttpClient } from "@/infrastructure/data/protocols/http";
-import { NoticeDTO } from "../models/notice-dto";
+import { HttpRequest, HttpResponse, HttpStatusCode, IHttpClient } from "@/infrastructure/interfaces/protocols";
 
 /**
  * Classe que implementa a interface de adição de edital.
@@ -14,10 +13,12 @@ export class NoticeService implements INoticeService {
      * @constructor
      * @param {string} url - A URL para adicionar um edital.
      * @param {IHttpClient} httpClient - O cliente HATEOAS para realizar as requisições.
+     * @param {Record<string, string>} privateHeader - Informações de segurança para realizar as requisições.
      */
     constructor(
         private readonly url: string,
-        private readonly httpClient: IHttpClient
+        private readonly httpClient: IHttpClient,
+        private readonly privateHeader: Record<string, string>
     ) { }
 
     /**
@@ -28,13 +29,16 @@ export class NoticeService implements INoticeService {
      */
     async get(params: INoticeService.GetParams): Promise<Array<Notice>> {
 
+        const key = import.meta.env.VITE_OCP_APIM_SUBSCRIPTION_KEY;
+
         const httpRequest: HttpRequest = {
             url: this.url,
             method: 'GET',
             body: {
                 skip: params.skip,
                 take: params.take
-            }
+            },
+            headers: this.privateHeader
         };
 
         try {
@@ -62,7 +66,8 @@ export class NoticeService implements INoticeService {
 
         const httpRequest: HttpRequest = {
             url: `${this.url}/${params.id}`,
-            method: 'GET'
+            method: 'GET',
+            headers: this.privateHeader
         };
 
         try {
@@ -85,25 +90,43 @@ export class NoticeService implements INoticeService {
      * @returns {Promise<Notice>} Uma promessa que resolve para o edital adicionado.
      */
     async add(params: INoticeService.AddParams): Promise<Notice> {
-        const noticeDTO: NoticeDTO = {
-            registrationStartDate: params.registrationStartDate,
-            registrationEndDate: params.registrationEndDate,
-            evaluationStartDate: params.evaluationStartDate,
-            evaluationEndDate: params.evaluationEndDate,
-            appealStartDate: params.appealStartDate,
-            appealEndDate: params.appealEndDate,
-            sendingDocsStartDate: params.sendingDocsStartDate,
-            sendingDocsEndDate: params.sendingDocsEndDate,
-            suspensionYears: params.suspensionYears,
-            partialReportDeadline: params.partialReportDeadline,
-            finalReportDeadline: params.finalReportDeadline,
-            docUrl: params.docUrl
-        };
+        const noticeDTO = new FormData();
+        noticeDTO.append("registrationStartDate", params.registrationStartDate.toISOString());
+        noticeDTO.append("registrationEndDate", params.registrationEndDate.toISOString());
+        noticeDTO.append("evaluationStartDate", params.evaluationStartDate.toISOString());
+        noticeDTO.append("evaluationEndDate", params.evaluationEndDate.toISOString());
+        noticeDTO.append("appealStartDate", params.appealStartDate.toISOString());
+        noticeDTO.append("appealEndDate", params.appealEndDate.toISOString());
+        noticeDTO.append("sendingDocsStartDate", params.sendingDocsStartDate.toISOString());
+        noticeDTO.append("sendingDocsEndDate", params.sendingDocsEndDate.toISOString());
+        noticeDTO.append("suspensionYears", params.suspensionYears.toString());
+        noticeDTO.append("partialReportDeadline", params.partialReportDeadline.toISOString());
+        noticeDTO.append("finalReportDeadline", params.finalReportDeadline.toISOString());
+        if (params.attachedFile) noticeDTO.append("file", params.attachedFile);
+        if (params.activities) {
+            params.activities.forEach((activityType, atIndex) => {
+                noticeDTO.append(`activities[${atIndex}].name`, activityType.name);
+                noticeDTO.append(`activities[${atIndex}].unity`, activityType.unity);
+                if (activityType.activities) {
+                    activityType.activities.forEach((activity, index) => {
+                        noticeDTO.append(`activities[${atIndex}].activities[${index}].name`, activity.name);
+                        noticeDTO.append(`activities[${atIndex}].activities[${index}].points`, activity.points.toString());
+                        noticeDTO.append(`activities[${atIndex}].activities[${index}].limits`, activity.limits.toString());
+                    })
+                }
+            });
+        }
+        noticeDTO.append('suspensionYears', params.suspensionYears.toString());
+        if (params.description) noticeDTO.append('description', params.description);
 
         const httpRequest: HttpRequest = {
             url: this.url,
             method: 'POST',
-            body: noticeDTO
+            body: noticeDTO,
+            headers: {
+                ...this.privateHeader,
+                'Content-Type': 'multipart/form-data'
+            }
         };
 
         try {
@@ -126,31 +149,51 @@ export class NoticeService implements INoticeService {
      * @returns {Promise<Notice>} Uma promessa que resolve para o edital atualizado.
      */
     async update(params: INoticeService.UpdateParams): Promise<Notice> {
-        const noticeDTO: NoticeDTO = {
-            registrationStartDate: params.registrationStartDate,
-            registrationEndDate: params.registrationEndDate,
-            evaluationStartDate: params.evaluationStartDate,
-            evaluationEndDate: params.evaluationEndDate,
-            appealStartDate: params.appealStartDate,
-            appealEndDate: params.appealEndDate,
-            sendingDocsStartDate: params.sendingDocsStartDate,
-            sendingDocsEndDate: params.sendingDocsEndDate,
-            suspensionYears: params.suspensionYears,
-            partialReportDeadline: params.partialReportDeadline,
-            finalReportDeadline: params.finalReportDeadline,
-            docUrl: params.docUrl,
-            description: params.description,
-            deletedAt: params.deletedAt
-        };
+
+        const noticeDTO = new FormData();
+        noticeDTO.append("registrationStartDate", typeof params.registrationStartDate === 'string' ? params.registrationStartDate : params.registrationStartDate.toISOString());
+        noticeDTO.append("registrationEndDate", typeof params.registrationEndDate === 'string' ? params.registrationEndDate : params.registrationEndDate.toISOString());
+        noticeDTO.append("evaluationStartDate", typeof params.evaluationStartDate === 'string' ? params.evaluationStartDate : params.evaluationStartDate.toISOString());
+        noticeDTO.append("evaluationEndDate", typeof params.evaluationEndDate === 'string' ? params.evaluationEndDate : params.evaluationEndDate.toISOString());
+        noticeDTO.append("appealStartDate", typeof params.appealStartDate === 'string' ? params.appealStartDate : params.appealStartDate.toISOString());
+        noticeDTO.append("appealEndDate", typeof params.appealEndDate === 'string' ? params.appealEndDate : params.appealEndDate.toISOString());
+        noticeDTO.append("sendingDocsStartDate", typeof params.sendingDocsStartDate === 'string' ? params.sendingDocsStartDate : params.sendingDocsStartDate.toISOString());
+        noticeDTO.append("sendingDocsEndDate", typeof params.sendingDocsEndDate === 'string' ? params.sendingDocsEndDate : params.sendingDocsEndDate.toISOString());
+        noticeDTO.append("partialReportDeadline", typeof params.partialReportDeadline === 'string' ? params.partialReportDeadline : params.partialReportDeadline.toISOString());
+        noticeDTO.append("finalReportDeadline", typeof params.finalReportDeadline === 'string' ? params.finalReportDeadline : params.finalReportDeadline.toISOString());
+        noticeDTO.append("suspensionYears", params.suspensionYears.toString());
+        if (params.attachedFile) noticeDTO.append("file", params.attachedFile);
+        if (params.activities) {
+            params.activities.forEach((activityType, atIndex) => {
+                noticeDTO.append(`activities[${atIndex}].name`, activityType.name);
+                noticeDTO.append(`activities[${atIndex}].unity`, activityType.unity);
+                if (activityType.activities) {
+                    activityType.activities.forEach((activity, index) => {
+                        noticeDTO.append(`activities[${atIndex}].activities[${index}].name`, activity.name);
+                        noticeDTO.append(`activities[${atIndex}].activities[${index}].points`, activity.points.toString());
+                        noticeDTO.append(`activities[${atIndex}].activities[${index}].limits`, activity.limits.toString());
+                    })
+                }
+            });
+        }
+        noticeDTO.append('suspensionYears', params.suspensionYears.toString());
+        if (params.description) {
+            noticeDTO.append('description', params.description);
+        }
 
         const httpRequest: HttpRequest = {
-            url: `${this.url}/${params.id}`,
+            url: `${this.url + params.id}`,
             method: 'PUT',
-            body: noticeDTO
+            body: noticeDTO,
+            headers: {
+                ...this.privateHeader,
+                'Content-Type': 'multipart/form-data'
+            }
         };
 
         try {
             const httpResponse: HttpResponse = await this.httpClient.request(httpRequest);
+            console.log(httpResponse);
 
             if (httpResponse.statusCode === HttpStatusCode.ok) {
                 return httpResponse.body;
@@ -172,7 +215,8 @@ export class NoticeService implements INoticeService {
 
         const httpRequest: HttpRequest = {
             url: `${this.url}/${params.id}`,
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: this.privateHeader
         };
 
         try {
