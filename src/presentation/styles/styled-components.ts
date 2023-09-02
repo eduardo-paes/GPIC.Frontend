@@ -1,4 +1,4 @@
-import { Button, Card, Select, TextField } from "@mui/material";
+import { Button, Card, Select, Snackbar, TextField } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { DateField } from "@mui/x-date-pickers";
 import InputMask from "react-input-mask";
@@ -8,6 +8,8 @@ const Form = styled("form")({
 	flexDirection: "column",
 	margin: "2rem",
 });
+
+// Typography
 
 const Title = styled("p")({
 	fontSize: "1.75rem",
@@ -37,8 +39,9 @@ const StyledButton = styled(Button)({
 const StyledCard = styled(Card)({
 	flexDirection: "column",
 	maxHeight: "90%",
+	maxWidth: "30rem",
 	overflowY: "auto",
-	width: "500px",
+	width: "75%",
 	boxShadow: "0px 1px 3px rgba(0, 0, 0, 0.2), 0px 2px 6px rgba(0, 0, 0, 0.1)",
 	padding: "1.5rem",
 });
@@ -63,7 +66,6 @@ const StyledInputMaskField = styled(InputMask)({
 });
 
 const StyledTextField = styled(TextField)({
-	marginTop: "1rem",
 	borderRadius: "0.5rem",
 	boxShadow: "0px 1px 3px rgba(0, 0, 0, 0.2), 0px 2px 6px rgba(0, 0, 0, 0.1)",
 	"& > *": {
@@ -88,6 +90,14 @@ const StyledSelectField = styled(Select)({
 	},
 });
 
+const StyledSnackbar = styled(Snackbar)({
+	position: "absolute",
+	zIndex: 1400,
+	left: "50%",
+	top: "20%",
+	transform: "translate(-50%, -50%)",
+});
+
 export {
 	Form,
 	Paragraph,
@@ -97,6 +107,7 @@ export {
 	StyledInputMaskField,
 	StyledDateField,
 	StyledSelectField,
+	StyledSnackbar,
 	StyledTextField,
 	Subtitle,
 	Title,

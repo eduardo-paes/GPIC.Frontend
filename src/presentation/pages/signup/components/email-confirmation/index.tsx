@@ -60,9 +60,9 @@ const EmailConfirmationPage: React.FC<Props> = ({ authService, email }) => {
                         {isLoading ? 'Carregando...' : 'Confirmar'}
                     </StyledButton>
                 </Box>
-                {feedback && <FeedbackMessage open={openFeedback} handleClose={() => setOpenFeedback(false)} feedback={feedback!} />}
-                <Loading isLoading={isLoading} />
             </form>
+            {feedback && <FeedbackMessage open={openFeedback} handleClose={() => setOpenFeedback(false)} feedback={feedback!} />}
+            <Loading isLoading={isLoading} />
         </div>
     );
 };

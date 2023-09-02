@@ -70,10 +70,10 @@ const ContactDataForm: React.FC<Props> = ({ student, setStudent, activeStep, set
             courseId: student.courseId!,
             startYear: student.startYear!,
             assistanceTypeId: student.assistanceTypeId!,
-            phoneDDD: parseInt(student.phoneDDD!),
-            phone: parseInt(removeNonNumeric(student.phone!)),
-            cellPhoneDDD: parseInt(student.cellPhoneDDD!),
-            cellPhone: parseInt(removeNonNumeric(student.cellPhone!)),
+            phoneDDD: student.phoneDDD ? parseInt(student.phoneDDD!) : undefined,
+            phone: student.phone ? parseInt(removeNonNumeric(student.phone!)) : undefined,
+            cellPhoneDDD: student.cellPhoneDDD ? parseInt(student.cellPhoneDDD!) : undefined,
+            cellPhone: student.cellPhone ? parseInt(removeNonNumeric(student.cellPhone!)) : undefined,
         };
     }
 
@@ -115,41 +115,45 @@ const ContactDataForm: React.FC<Props> = ({ student, setStudent, activeStep, set
     };
 
     return (
-        <Formik
-            initialValues={student}
-            onSubmit={handleSubmit}
-        >
-            <Form>
-                <StyledTextField
-                    fullWidth
-                    name='phone'
-                    label="Telefone"
-                    value={student.phone}
-                    error={errors && errors.phone !== null}
-                    onChange={handlePhoneChange}
-                />
-                {errors?.phone && <FormHelperText error>{errors.phone}</FormHelperText>}
-                <StyledTextField
-                    fullWidth
-                    name='cellPhone'
-                    label="Celular"
-                    value={student.cellPhone}
-                    error={errors && errors.cellPhone !== null}
-                    onChange={handlePhoneChange}
-                />
-                {errors?.cellPhone && <FormHelperText error>{errors.cellPhone}</FormHelperText>}
-                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', pt: 2 }}>
-                    <StyledButton variant="outlined" onClick={goBack}>
-                        Voltar
-                    </StyledButton>
-                    <StyledButton disabled={isLoading} variant="contained" color="primary" type="submit">
-                        Cadastrar
-                    </StyledButton>
-                </Box>
-            </Form>
+        <>
+            <Formik
+                initialValues={student}
+                onSubmit={handleSubmit}
+            >
+                <Form>
+                    <StyledTextField
+                        fullWidth
+                        name='phone'
+                        label="Telefone"
+                        value={student.phone}
+                        error={errors && errors.phone !== null}
+                        onChange={handlePhoneChange}
+                        sx={{ marginTop: '1rem' }}
+                    />
+                    {errors?.phone && <FormHelperText error>{errors.phone}</FormHelperText>}
+                    <StyledTextField
+                        fullWidth
+                        name='cellPhone'
+                        label="Celular"
+                        value={student.cellPhone}
+                        error={errors && errors.cellPhone !== null}
+                        onChange={handlePhoneChange}
+                        sx={{ marginTop: '1rem' }}
+                    />
+                    {errors?.cellPhone && <FormHelperText error>{errors.cellPhone}</FormHelperText>}
+                    <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', pt: 2 }}>
+                        <StyledButton variant="outlined" onClick={goBack}>
+                            Voltar
+                        </StyledButton>
+                        <StyledButton disabled={isLoading} variant="contained" color="primary" type="submit">
+                            Cadastrar
+                        </StyledButton>
+                    </Box>
+                </Form>
+            </Formik>
             {feedback && <FeedbackMessage open={openFeedback} handleClose={() => setOpenFeedback(false)} feedback={feedback!} />}
             <Loading isLoading={isLoading} />
-        </Formik>
+        </>
     );
 };
 

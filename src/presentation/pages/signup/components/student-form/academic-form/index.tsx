@@ -114,6 +114,7 @@ const AcademicDataForm: React.FC<Props> = ({ student, setStudent, activeStep, se
         >
             <Form>
                 <StyledTextField
+                    sx={{ marginTop: '1rem' }}
                     fullWidth
                     type="text"
                     value={student.registrationCode}
@@ -160,6 +161,7 @@ const AcademicDataForm: React.FC<Props> = ({ student, setStudent, activeStep, se
                 </FormControl>
                 {errors?.courseId && <FormHelperText error>{errors.courseId}</FormHelperText>}
                 <StyledTextField
+                    sx={{ marginTop: '1rem' }}
                     fullWidth
                     type="text"
                     label="Ano de Ingresso"

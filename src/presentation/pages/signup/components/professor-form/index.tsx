@@ -102,6 +102,7 @@ export const ProfessorForm: React.FC<Props> = ({ authService, professorService, 
     const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
+        setIsLoading(true);
         if (validateForm()) {
             try {
                 const professorDTO = mapProfessorViewModelToDTO(professor);
@@ -113,9 +114,9 @@ export const ProfessorForm: React.FC<Props> = ({ authService, professorService, 
                 setFeedback({ message: 'Não foi possível criar o usuário. Verifique os campos e tente novamente.', type: 'error' });
             } finally {
                 setOpenFeedback(true);
-                setIsLoading(false);
             }
         }
+        setIsLoading(false);
     };
 
     const validateForm = (): boolean => {
@@ -146,8 +147,9 @@ export const ProfessorForm: React.FC<Props> = ({ authService, professorService, 
     };
 
     return (
-        <Form onSubmit={handleFormSubmit}>
+        <Form onSubmit={handleFormSubmit} sx={{ gap: 1 }}>
             <StyledTextField
+                fullWidth
                 label="Nome"
                 name="name"
                 value={professor.name}
@@ -157,6 +159,7 @@ export const ProfessorForm: React.FC<Props> = ({ authService, professorService, 
 
             {errors?.name && <FormHelperText error>{errors.name}</FormHelperText>}
             <StyledTextField
+                fullWidth
                 label="CPF"
                 type="text"
                 name="CPF"
@@ -167,6 +170,7 @@ export const ProfessorForm: React.FC<Props> = ({ authService, professorService, 
 
             {errors?.CPF && <FormHelperText error>{errors.CPF}</FormHelperText>}
             <StyledTextField
+                fullWidth
                 label="Email Institucional"
                 type="text"
                 name="email"
@@ -177,6 +181,7 @@ export const ProfessorForm: React.FC<Props> = ({ authService, professorService, 
 
             {errors?.email && <FormHelperText error>{errors.email}</FormHelperText>}
             <StyledTextField
+                fullWidth
                 label="Senha"
                 type="password"
                 name="password"
@@ -187,6 +192,7 @@ export const ProfessorForm: React.FC<Props> = ({ authService, professorService, 
 
             {errors?.password && <FormHelperText error>{errors.password}</FormHelperText>}
             <StyledTextField
+                fullWidth
                 label="Confirmação de senha"
                 type="password"
                 variant="outlined"
@@ -198,6 +204,7 @@ export const ProfessorForm: React.FC<Props> = ({ authService, professorService, 
 
             {errors?.confirmPassword && <FormHelperText error>{errors.confirmPassword}</FormHelperText>}
             <StyledTextField
+                fullWidth
                 label="SIAPE"
                 type="text"
                 name="SIAPEEnrollment"
@@ -209,6 +216,7 @@ export const ProfessorForm: React.FC<Props> = ({ authService, professorService, 
 
             {errors?.SIAPE && <FormHelperText error>{errors.SIAPE}</FormHelperText>}
             <StyledTextField
+                fullWidth
                 label="Identificador Lattes"
                 type="text"
                 name="identifyLattes"

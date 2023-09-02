@@ -10,7 +10,7 @@ export function cpfMask(value: string) {
 export function rgMask(value: string) {
 	return value
 		.replace(/\D/g, "")
-		.replace(/(\d{3})(\d)/, "$1.$2")
+		.replace(/(\d{2})(\d)/, "$1.$2")
 		.replace(/(\d{3})(\d)/, "$1.$2")
 		.replace(/(\d{3})(\d{1,2})/, "$1-$2")
 		.replace(/(-\d{1})\d+?$/, "$1");
@@ -49,6 +49,31 @@ export function phoneMask(value: string) {
 
 export function removeNonNumeric(input: string) {
 	return input.replace(/[^0-9]/g, "");
+}
+
+export function formatDateToISOString(date: Date | undefined) {
+	if (date === undefined) return null;
+	date = new Date(date);
+	const dateTimeString = date.toISOString();
+	return dateTimeString.split("T")[0];
+}
+
+export function formatDateToLocaleString(date: Date | string) {
+	const brazilTimeZoneOffset = 3 * 60;
+	date = new Date(date);
+	const adjustedDate: Date = new Date(
+		date.getTime() + brazilTimeZoneOffset * 60000
+	);
+
+	const day = adjustedDate.getUTCDate();
+	const month = adjustedDate.getUTCMonth() + 1;
+	const year = adjustedDate.getUTCFullYear();
+
+	const formattedDate = `${day.toString().padStart(2, "0")}/${month
+		.toString()
+		.padStart(2, "0")}/${year}`;
+
+	return formattedDate;
 }
 
 export const STATES = {

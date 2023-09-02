@@ -1,14 +1,14 @@
 import StudentViewModel from "@/presentation/models/student";
 
-import React from "react";
-import FormStepper from "./form-stepper";
-import PersonalDataForm from "./personal-form";
-import AddressDataForm from "./address-form";
-import AcademicDataForm from "./academic-form";
-import ContactDataForm from "./contact-form";
-import EmailConfirmationPage from "../email-confirmation";
 import { IAuthService } from "@/domain/usecases/authentication-interface";
 import { IStudentService } from "@/domain/usecases/student-interface";
+import { ICEPService } from "@/infrastructure/interfaces/services/cep-service";
+import React from "react";
+import AcademicDataForm from "./academic-form";
+import AddressDataForm from "./address-form";
+import ContactDataForm from "./contact-form";
+import FormStepper from "./form-stepper";
+import PersonalDataForm from "./personal-form";
 
 const STEPS = [
     'Dados Pessoais',
@@ -20,12 +20,13 @@ const STEPS = [
 interface Props {
     authService: IAuthService;
     studentService: IStudentService;
+    cepService: ICEPService;
     student: StudentViewModel;
     setStudent: (student: any) => void;
     setEmailValidationPending: (emailValidationPending: boolean) => void;
 }
 
-export const StudentForm: React.FC<Props> = ({ authService, studentService, student, setStudent, setEmailValidationPending }) => {
+export const StudentForm: React.FC<Props> = ({ authService, studentService, student, setStudent, setEmailValidationPending, cepService }) => {
 
     const [activeStep, setActiveStep] = React.useState<number>(0);
 
@@ -45,7 +46,7 @@ export const StudentForm: React.FC<Props> = ({ authService, studentService, stud
                     }
                     {
                         activeStep === 1 &&
-                        <AddressDataForm activeStep={activeStep} setActiveStep={setActiveStep} student={student} setStudent={setStudent} />
+                        <AddressDataForm activeStep={activeStep} setActiveStep={setActiveStep} student={student} setStudent={setStudent} cepService={cepService} />
                     }
                     {
                         activeStep === 2 &&
