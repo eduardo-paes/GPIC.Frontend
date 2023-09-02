@@ -1,6 +1,6 @@
 import { Student } from "@/domain/models/student";
 import { IStudentService } from "@/domain/usecases/student-interface";
-import { HttpRequest, HttpResponse, HttpStatusCode, IHttpClient } from "@/infrastructure/data/protocols/http";
+import { HttpRequest, HttpResponse, HttpStatusCode, IHttpClient } from "@/infrastructure/interfaces/protocols";
 import { StudentDTO } from "../models/student-dto";
 import { removeNonNumeric } from "@/presentation/utils";
 
@@ -15,10 +15,12 @@ export class StudentService implements IStudentService {
      * @constructor
      * @param {string} url - A URL para adicionar um usuário.
      * @param {IHttpClient} httpClient - O cliente HATEOAS para realizar as requisições.
+     * @param {Record<string, string>} publicHeader - Header para requisições públicas.
      */
     constructor(
         private readonly url: string,
-        private readonly httpClient: IHttpClient
+        private readonly httpClient: IHttpClient,
+        private readonly publicHeader: Record<string, string>
     ) { }
 
     /**
@@ -57,7 +59,8 @@ export class StudentService implements IStudentService {
         const httpRequest: HttpRequest = {
             url: this.url,
             method: 'POST',
-            body: studentDTO
+            body: studentDTO,
+            headers: this.publicHeader
         };
 
         try {

@@ -1,6 +1,6 @@
 import { Professor } from "@/domain/models/professor";
 import { IProfessorService } from "@/domain/usecases/professor-interface";
-import { HttpRequest, HttpResponse, HttpStatusCode, IHttpClient } from "@/infrastructure/data/protocols/http";
+import { HttpRequest, HttpResponse, HttpStatusCode, IHttpClient } from "@/infrastructure/interfaces/protocols";
 import { ProfessorDTO } from "../models/professor-dto";
 
 /**
@@ -14,10 +14,12 @@ export class ProfessorService implements IProfessorService {
      * @constructor
      * @param {string} url - A URL para adicionar um professor.
      * @param {IHttpClient} httpClient - O cliente HATEOAS para realizar as requisições.
+     * @param {Record<string, string>} publicHeader - Header para requisições públicas.
      */
     constructor(
         private readonly url: string,
-        private readonly httpClient: IHttpClient
+        private readonly httpClient: IHttpClient,
+        private readonly publicHeader: Record<string, string>
     ) { }
 
     /**
@@ -39,13 +41,12 @@ export class ProfessorService implements IProfessorService {
         const httpRequest: HttpRequest = {
             url: this.url,
             method: 'POST',
-            body: professorDTO
+            body: professorDTO,
+            headers: this.publicHeader
         };
 
         try {
             const httpResponse: HttpResponse = await this.httpClient.request(httpRequest);
-
-            console.log(httpResponse);
 
             if (httpResponse.statusCode === HttpStatusCode.created) {
                 return httpResponse.body;
