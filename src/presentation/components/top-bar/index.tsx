@@ -71,8 +71,7 @@ const TopBar: React.FC = () => {
                     open={open}
                     onClose={handleMenuClose}
                 >
-                    <MenuItem onClick={handleMenuClose}>Perfil</MenuItem>
-                    <MenuItem onClick={navigateToNoticePage}>Gerenciar Editais</MenuItem>
+                    <MenuItem onClick={navigateToNoticePage}>Editais</MenuItem>
                     <MenuItem onClick={handleLogout}>Logout</MenuItem>
                 </Menu>
             </Toolbar>

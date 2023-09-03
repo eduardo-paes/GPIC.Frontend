@@ -39,6 +39,7 @@ const Title = styled("p")({
 	fontSize: "1.75rem",
 	marginTop: "1rem",
 	fontWeight: "bold",
+	color: colors.primary[100],
 });
 
 const Subtitle = styled("p")({

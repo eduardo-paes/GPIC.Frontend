@@ -1,3 +1,4 @@
+import UserRole from "../enums";
 import { UserLogin } from "../models/user-login";
 
 export interface IAuthService {
@@ -5,6 +6,7 @@ export interface IAuthService {
     confirmEmail(params: IAuthService.ConfirmEmailParams): Promise<string>;
     forgotPassword(params: IAuthService.ForgotPasswordParams): Promise<string>;
     resetPassword(params: IAuthService.ResetPasswordParams): Promise<string>;
+    isAuthenticated(): boolean;
 }
 
 export namespace IAuthService {

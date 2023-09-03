@@ -1,6 +1,6 @@
+import { UserLogin } from "@/domain/models/user-login";
 import { HttpRequest, HttpResponse, HttpStatusCode, IHttpClient } from "@/infrastructure/interfaces/protocols";
 import { IAuthService } from "../../domain/usecases/authentication-interface";
-import { UserLogin } from "@/domain/models/user-login";
 
 export class AuthenticationService implements IAuthService {
     constructor(
@@ -79,5 +79,9 @@ export class AuthenticationService implements IAuthService {
             return response.body;
         throw new Error(`Erro ao atualizar a senha: ${response.statusCode}`);
 
+    }
+
+    isAuthenticated(): boolean {
+        return sessionStorage.getItem('jwtToken') != null;
     }
 }

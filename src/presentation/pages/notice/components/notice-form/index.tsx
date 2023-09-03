@@ -258,8 +258,6 @@ const NoticeForm: React.FC<Props> = ({ initialValues, data, setData, activitySer
                             </InputStack>
                         </label>
                         <input id='noticePdf' onChange={handleFileChange} hidden accept=".pdf" type="file" />
-                        {/* <StyledButton sx={{ height: '3rem' }} fullWidth variant="outlined" startIcon={<AttachFileIcon />}>
-                        </StyledButton> */}
                         <Paragraph>{filename}</Paragraph>
                     </Grid>
                 </Grid>
