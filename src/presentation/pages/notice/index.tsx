@@ -1,37 +1,26 @@
-import { INoticeService } from '@/domain/usecases/notice-interface';
-import CustomDialog from '@/presentation/components/custom-dialog';
-import MainLayout from '@/presentation/components/main-layout';
-import { NoticeViewModel } from '@/presentation/models/notice';
-import { StyledButton, Title } from '@/presentation/styles/styled-components';
-import { Add, Delete, Edit, Visibility } from '@mui/icons-material';
-import {
-    Box,
-    Button,
-    Card,
-    Grid,
-    IconButton,
-    Input,
-    Paper,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Typography
-} from '@mui/material';
-import React from 'react';
-import NoticeForm from './components/notice-form';
-import { formatDateToLocaleString } from '@/presentation/utils';
+import { Mapper } from '@/data/interfaces/mapper';
 import { NoticeDTO } from '@/data/models/notice-dto';
 import { Notice } from '@/domain/models/notice';
-import NoticeDialog from './components/notice-dialog';
-import Loading from '@/presentation/components/loading';
-import { Feedback } from '@/presentation/models/feedback';
-import FeedbackMessage from '@/presentation/components/feedback-snackbar';
 import { IActivityService } from '@/domain/usecases/activity-interface';
-import NoticeMapper from '@/data/mappings/notice';
-import { Mapper } from '@/data/interfaces/mapper';
+import { IAuthService } from '@/domain/usecases/authentication-interface';
+import { INoticeService } from '@/domain/usecases/notice-interface';
+import CustomDialog from '@/presentation/components/custom-dialog';
+import FeedbackMessage from '@/presentation/components/feedback-snackbar';
+import Loading from '@/presentation/components/loading';
+import MainLayout from '@/presentation/components/main-layout';
+import { Feedback } from '@/presentation/models/feedback';
+import { NoticeViewModel } from '@/presentation/models/notice';
+import { TokenPayload } from '@/presentation/models/token-payload';
+import { StyledButton, Title } from '@/presentation/styles/styled-components';
+import { Add } from '@mui/icons-material';
+import {
+    Grid
+} from '@mui/material';
+import React from 'react';
+import { decodeToken } from "react-jwt";
+import NoticeDialog from './components/notice-dialog';
+import NoticeForm from './components/notice-form';
+import NoticeTable from './components/notice-table';
 
 const initialNotice: NoticeViewModel = {
     id: '',
@@ -52,10 +41,11 @@ const initialNotice: NoticeViewModel = {
 interface Props {
     noticeService: INoticeService;
     activityService: IActivityService;
+    authService: IAuthService;
     mapperService: Mapper<NoticeViewModel, NoticeDTO>;
 }
 
-const NoticeManagementPage: React.FC<Props> = ({ noticeService, activityService, mapperService }) => {
+const NoticeManagementPage: React.FC<Props> = ({ noticeService, activityService, authService, mapperService }) => {
     const [notices, setNotices] = React.useState<NoticeViewModel[]>([]);
     const [selectedNotice, setSelectedNotice] = React.useState<NoticeViewModel>(initialNotice);
     const [openDialog, setOpenDialog] = React.useState<boolean>(false);
@@ -63,24 +53,38 @@ const NoticeManagementPage: React.FC<Props> = ({ noticeService, activityService,
     const [disableButton, setDisableButton] = React.useState<boolean>(false);
     const [refresh, setRefresh] = React.useState<boolean>(true);
     const [take, setTake] = React.useState<number>(5);
-    const [skip, setSkip] = React.useState<number>(0);
+    const [page, setPage] = React.useState<number>(0);
     const [isLoading, setIsLoading] = React.useState<boolean>(false);
     const [feedback, setFeedback] = React.useState<Feedback>();
     const [openFeedback, setOpenFeedback] = React.useState<boolean>(false);
+    const [hasAdminPermission, setHasAdminPermission] = React.useState<boolean>();
 
     React.useEffect(() => {
-        if (refresh) {
-            getAllNotice();
-            console.log(notices);
+        getPermission();
+    }, [hasAdminPermission])
 
-        }
+    React.useEffect(() => {
+        if (refresh) getAllNotice();
     }, [refresh])
+
+    const getPermission = async () => {
+        try {
+            const token = sessionStorage.getItem('jwtToken');
+            const decodedToken = decodeToken<TokenPayload>(token!);
+            const role = decodedToken?.['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
+            if (role) setHasAdminPermission(role === 'ADMIN');
+            else setHasAdminPermission(false);
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     const getAllNotice = async () => {
         try {
-            const response = await noticeService.get({ take, skip });
+            const response = await noticeService.get({ take, skip: page });
             setNotices(response.map(mapNoticeModelToViewModel));
             setRefresh(false);
+
         } catch (error) {
             console.error(error);
         }
@@ -96,7 +100,7 @@ const NoticeManagementPage: React.FC<Props> = ({ noticeService, activityService,
         setOpenDialog(false);
     };
 
-    const visualizeNotice = (notice: NoticeViewModel) => {
+    const handleVisualizeNotice = (notice: NoticeViewModel) => {
         setOpenNoticeDialog(true);
         setSelectedNotice(notice);
     };
@@ -169,66 +173,29 @@ const NoticeManagementPage: React.FC<Props> = ({ noticeService, activityService,
                 <Grid item container display={'flex'} alignItems={'center'} justifyContent={'space-between'} xs={12}>
                     <Grid item >
                         <Title>
-                            Gerenciamento de Editais
+                            Editais
                         </Title>
                     </Grid>
-                    <Grid item >
-                        <StyledButton variant="contained" color="primary" startIcon={<Add />} onClick={() => handleOpenDialog()}>
-                            Novo Edital
-                        </StyledButton>
-                    </Grid>
+                    {
+                        hasAdminPermission &&
+                        <Grid item >
+                            <StyledButton variant="contained" color="primary" startIcon={<Add />} onClick={() => handleOpenDialog()}>
+                                Novo Edital
+                            </StyledButton>
+                        </Grid>
+                    }
                 </Grid>
                 <Grid mt={2} item xs={12}>
-                    <TableContainer component={Paper}>
-                        <Table>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell align='center' sx={{ fontWeight: 'bold' }} >Período de Abertura</TableCell>
-                                    <TableCell align='center' sx={{ fontWeight: 'bold' }} >Período de Avaliação</TableCell>
-                                    <TableCell align='center' sx={{ fontWeight: 'bold' }} >Período de Recurso</TableCell>
-                                    <TableCell align='center' sx={{ fontWeight: 'bold' }} >Período de Envio da Documentação</TableCell>
-                                    <TableCell align='center' sx={{ fontWeight: 'bold' }} >Ações</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {notices.length === 0 ? (
-                                    <TableRow>
-                                        <TableCell align='center' colSpan={6}>
-                                            <Typography variant="body1">Nenhum edital encontrado.</Typography>
-                                        </TableCell>
-                                    </TableRow>
-                                ) : (
-                                    notices.map((notice) => (
-                                        <TableRow key={notice.id}>
-                                            <TableCell align='center'>
-                                                {`${formatDateToLocaleString(notice.registrationStartDate!)} - ${formatDateToLocaleString(notice.registrationEndDate!)}`}
-                                            </TableCell>
-                                            <TableCell align='center'>
-                                                {`${formatDateToLocaleString(notice.evaluationStartDate!)} - ${formatDateToLocaleString(notice.evaluationEndDate!)}`}
-                                            </TableCell>
-                                            <TableCell align='center'>
-                                                {`${formatDateToLocaleString(notice.appealStartDate!)} - ${formatDateToLocaleString(notice.appealEndDate!)}`}
-                                            </TableCell>
-                                            <TableCell align='center'>
-                                                {`${formatDateToLocaleString(notice.sendingDocsStartDate!)} - ${formatDateToLocaleString(notice.sendingDocsEndDate!)}`}
-                                            </TableCell>
-                                            <TableCell align='center'>
-                                                <IconButton onClick={() => visualizeNotice(notice)}>
-                                                    <Visibility />
-                                                </IconButton>
-                                                <IconButton onClick={() => handleEditNotice(notice)}>
-                                                    <Edit />
-                                                </IconButton>
-                                                <IconButton onClick={() => handleDeleteNotice(notice.id)}>
-                                                    <Delete />
-                                                </IconButton>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))
-                                )}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
+                    <NoticeTable notices={notices}
+                        page={page}
+                        setPage={setPage}
+                        take={take}
+                        setTake={setTake}
+                        handleVisualizeNotice={handleVisualizeNotice}
+                        handleEditNotice={handleEditNotice}
+                        handleDeleteNotice={handleDeleteNotice}
+                        hasPermission={hasAdminPermission || false}
+                    />
                 </Grid>
                 <Grid item>
                     <CustomDialog

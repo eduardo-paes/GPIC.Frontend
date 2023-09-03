@@ -222,11 +222,9 @@ export class NoticeService implements INoticeService {
         try {
             const httpResponse: HttpResponse = await this.httpClient.request(httpRequest);
 
-            if (httpResponse.statusCode === HttpStatusCode.ok) {
+            if (httpResponse.statusCode === HttpStatusCode.ok)
                 return httpResponse.body;
-            } else {
-                throw new Error('Falha ao remover edital.');
-            }
+            else throw new Error(`Falha ao remover edital.`);
         } catch (error: any) {
             throw new Error(`Erro ao realizar a remoção de edital: ${error.message}`);
         }
