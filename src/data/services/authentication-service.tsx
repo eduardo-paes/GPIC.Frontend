@@ -1,8 +1,6 @@
+import { UserLogin } from "@/domain/models/user-login";
 import { HttpRequest, HttpResponse, HttpStatusCode, IHttpClient } from "@/infrastructure/interfaces/protocols";
 import { IAuthService } from "../../domain/usecases/authentication-interface";
-import { UserLogin } from "@/domain/models/user-login";
-import UserRole from "@/domain/enums";
-import { decodeBase64 } from "@/presentation/utils";
 
 export class AuthenticationService implements IAuthService {
     constructor(
