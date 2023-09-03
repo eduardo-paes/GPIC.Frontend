@@ -100,8 +100,8 @@ const ActivityTypeAccordion: React.FC<Props> = ({ activityType, edital, setEdita
                 <Paragraph sx={{ marginTop: 0 }}>{activityType.unity}</Paragraph>
             </AccordionSummary>
             <AccordionDetails>
-                <Grid container spacing={2} alignItems="center">
-                    <Grid item xs={6}>
+                <Grid container spacing={1} alignItems="center">
+                    <Grid item xs={12} sm={6}>
                         <StyledTextField
                             fullWidth
                             label="Nome"
@@ -111,7 +111,7 @@ const ActivityTypeAccordion: React.FC<Props> = ({ activityType, edital, setEdita
                             sx={{ bgcolor: 'white' }}
                         />
                     </Grid>
-                    <Grid item xs={2}>
+                    <Grid item xs={5} sm={2}>
                         <StyledTextField
                             fullWidth
                             label="Pontos"
@@ -122,7 +122,7 @@ const ActivityTypeAccordion: React.FC<Props> = ({ activityType, edital, setEdita
                             sx={{ bgcolor: 'white' }}
                         />
                     </Grid>
-                    <Grid item xs={2}>
+                    <Grid item xs={5} sm={2}>
                         <StyledTextField
                             fullWidth
                             label="Limite"
@@ -133,9 +133,9 @@ const ActivityTypeAccordion: React.FC<Props> = ({ activityType, edital, setEdita
                             sx={{ bgcolor: 'white' }}
                         />
                     </Grid>
-                    <Grid item xs={2}>
+                    <Grid item xs={2} display={'flex'} justifyContent={'center'}>
                         <IconButton onClick={actualActivityIndex < 0 ? handleAddActivity : handleUpdateActivity} sx={{ backgroundColor: colors.primary[100], color: colors.white, borderRadius: '1.5rem' }} >
-                            <AddIcon fontSize='medium' />
+                            <AddIcon fontSize='small' />
                         </IconButton>
                     </Grid>
                 </Grid>
@@ -147,7 +147,7 @@ const ActivityTypeAccordion: React.FC<Props> = ({ activityType, edital, setEdita
                                     key={index}
                                     disableGutters
                                     secondaryAction={
-                                        <Stack direction={'row'}>
+                                        <Stack direction={'column'}>
                                             <IconButton aria-label="edit" sx={{ color: colors.primary[100], borderRadius: '1.5rem' }} onClick={() => selectActivityToEdit(index)}>
                                                 <EditIcon fontSize='small' />
                                             </IconButton>
@@ -157,7 +157,13 @@ const ActivityTypeAccordion: React.FC<Props> = ({ activityType, edital, setEdita
                                         </Stack>
                                     }
                                 >
-                                    <ListItemText primary={item.name} secondary={`Pontos: ${item.points}\t\t\tLimite: ${item.limits}`} />
+                                    <ListItemText primary={item.name} secondary={
+                                        <Paragraph>
+                                            Pontos: {item.points}
+                                            <br />
+                                            Limite: {item.limits}
+                                        </Paragraph>
+                                    } />
                                 </ListItem>
                             </Card>
                         ))}

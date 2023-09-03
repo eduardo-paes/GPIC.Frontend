@@ -76,7 +76,7 @@ export const LoginForm: React.FC<Props> = ({ authService }) => {
             />
             <Subtitle style={{ textAlign: 'center' }}>Gerenciamento de Projetos de Iniciação Científica</Subtitle>
             <CardContent>
-                <Form onSubmit={handleFormSubmit}>
+                <Form onSubmit={handleFormSubmit} sx={{ margin: '2rem 0' }}>
                     <StyledTextField
                         fullWidth
                         label="Email"
@@ -95,7 +95,7 @@ export const LoginForm: React.FC<Props> = ({ authService }) => {
                         autoComplete=""
                         onChange={handlePasswordChange}
                         error={errors && errors.password !== null}
-                        sx={{ marginTop: '0.5rem' }}
+                        sx={{ marginTop: '1rem' }}
                     />
                     {errors?.password && <FormHelperText error>{errors.password}</FormHelperText>}
                     <StyledButton variant="contained" type="submit">

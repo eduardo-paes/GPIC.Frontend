@@ -80,7 +80,7 @@ const ActivityComponent: React.FC<Props> = ({ edital, setEdital }) => {
     return (
         <div>
             <Grid container spacing={2} alignItems="center">
-                <Grid item xs={6}>
+                <Grid item xs={12} sm={6}>
                     <StyledTextField
                         fullWidth
                         label="Nome"
@@ -89,7 +89,7 @@ const ActivityComponent: React.FC<Props> = ({ edital, setEdital }) => {
                         onChange={handleChangeActivityType}
                     />
                 </Grid>
-                <Grid item xs={5}>
+                <Grid item xs={10} sm={5}>
                     <StyledTextField
                         fullWidth
                         label="Unidade"
@@ -98,9 +98,9 @@ const ActivityComponent: React.FC<Props> = ({ edital, setEdital }) => {
                         onChange={handleChangeActivityType}
                     />
                 </Grid>
-                <Grid item xs={1} display={'flex'} justifyContent={'center'}>
+                <Grid item xs={2} sm={1} display={'flex'} justifyContent={'center'}>
                     <IconButton onClick={actualActivityTypeIndex < 0 ? handleAddActivityType : handleUpdateActivity} sx={{ backgroundColor: colors.primary[100], color: colors.white, borderRadius: '1.5rem' }} >
-                        <AddIcon fontSize='medium' />
+                        <AddIcon fontSize='small' />
                     </IconButton>
                 </Grid>
             </Grid>
@@ -111,12 +111,12 @@ const ActivityComponent: React.FC<Props> = ({ edital, setEdital }) => {
                         <ActivityTypeAccordion edital={edital} setEdital={setEdital} activityTypeIndex={unityIndex} activityType={activity} />
                     </Grid>
                     <Grid item xs={2} display={'flex'} justifyContent={'center'}>
-                        <Stack direction={'row'}>
+                        <Stack direction={'column'}>
                             <IconButton aria-label="edit" sx={{ color: colors.primary[100], borderRadius: '1.5rem' }} onClick={() => selectActivityTypeToEdit(unityIndex)}>
-                                <EditIcon fontSize='medium' />
+                                <EditIcon fontSize='small' />
                             </IconButton>
                             <IconButton aria-label="delete" sx={{ color: colors.primary[100], borderRadius: '1.5rem' }} onClick={() => handleDeleteActivityType(unityIndex)}  >
-                                <DeleteIcon fontSize='medium' />
+                                <DeleteIcon fontSize='small' />
                             </IconButton>
                         </Stack>
                     </Grid>
