@@ -33,7 +33,7 @@ export class ProgramTypeService implements IProgramTypeService {
         const key = import.meta.env.VITE_OCP_APIM_SUBSCRIPTION_KEY;
 
         const httpRequest: HttpRequest = {
-            url: `${this.url}/opened`,
+            url: `${this.url}`,
             method: 'GET',
             body: {
                 skip: params.skip,
