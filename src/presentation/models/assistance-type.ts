@@ -1,5 +1,5 @@
-export interface AssistanceType {
-	id: string;
+export interface AssistanceTypeViewModel {
+	id?: string;
 	name: string;
 	description: string;
 	deletedAt?: Date;
