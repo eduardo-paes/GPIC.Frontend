@@ -4,8 +4,9 @@ import { Box, FormControl, FormHelperText, InputLabel, MenuItem, SelectChangeEve
 import { Form, Formik, FormikHelpers } from "formik";
 import React from "react";
 import { validateHomeAddress, validateCity, validateUF, validateCEP } from "../../../validations";
-import { STATES, cepMask, removeNonNumeric } from "@/presentation/utils";
+import { cepMask, removeNonNumeric } from "@/presentation/utils";
 import { ICEPService } from "@/infrastructure/interfaces/services/cep-service";
+import { STATES } from "@/presentation/utils/constants";
 
 type AddressError = {
     homeAddress: string | null;

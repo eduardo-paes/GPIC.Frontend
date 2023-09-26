@@ -1,6 +1,12 @@
+import { IAssistanceTypeService } from "@/domain/usecases/assistance-type-interface";
+import { ICampusService } from "@/domain/usecases/campus-interface";
+import { ICourseService } from "@/domain/usecases/course-interface";
+import { AssistanceTypeViewModel } from "@/presentation/models/assistance-type";
+import { CampusViewModel } from "@/presentation/models/campus";
+import { CourseViewModel } from "@/presentation/models/course";
 import StudentViewModel from "@/presentation/models/student";
 import { StyledButton, StyledSelectField, StyledTextField } from "@/presentation/styles/styled-components";
-import { Box, FormControl, FormHelperText, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material";
+import { Box, FormControl, FormHelperText, InputLabel, MenuItem, SelectChangeEvent } from "@mui/material";
 import { Form, Formik, FormikHelpers } from "formik";
 import React from "react";
 import { validateCampus, validateCourse, validateRegistrationCode, validateStartYear, validateTypeAssistance } from "../../../validations";
@@ -41,11 +47,55 @@ type Props = {
     setStudent: (student: any) => void;
     activeStep: number;
     setActiveStep: (activeStep: number) => void;
+    campusService: ICampusService;
+    courseService: ICourseService;
+    assistanceTypeService: IAssistanceTypeService;
 };
 
-const AcademicDataForm: React.FC<Props> = ({ student, setStudent, activeStep, setActiveStep }) => {
+const AcademicDataForm: React.FC<Props> = ({ student, setStudent, activeStep, setActiveStep, campusService, courseService, assistanceTypeService }) => {
 
     const [errors, setErrors] = React.useState<AcademicError>();
+    const [loaded, setLoaded] = React.useState<boolean>(false);
+
+    const [campus, setCampus] = React.useState<Array<CampusViewModel>>([]);
+    const [courses, setCourses] = React.useState<Array<CourseViewModel>>([]);
+    const [assistanceTypes, setAssistanceTypes] = React.useState<Array<AssistanceTypeViewModel>>([]);
+
+    React.useEffect(() => {
+        if (!loaded) {
+            getCampus();
+            getCourses();
+            getAssistanceTypes();
+            setLoaded(true);
+        }
+    });
+
+    async function getCampus() {
+        try {
+            const response = await campusService.get({});
+            setCampus(response);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async function getCourses() {
+        try {
+            const response = await courseService.get({});
+            setCourses(response);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async function getAssistanceTypes() {
+        try {
+            const response = await assistanceTypeService.get({});
+            setAssistanceTypes(response);
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     const handleRegistrationCodeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
@@ -134,7 +184,7 @@ const AcademicDataForm: React.FC<Props> = ({ student, setStudent, activeStep, se
                         label="Campus"
                         onChange={handleSelectFieldChange}
                     >
-                        {CAMPUSES_MOCK.map(({ id, name }) => (
+                        {campus.map(({ id, name }) => (
                             <MenuItem key={id} value={id}>
                                 {name}
                             </MenuItem>
@@ -152,7 +202,7 @@ const AcademicDataForm: React.FC<Props> = ({ student, setStudent, activeStep, se
                         label="Curso"
                         onChange={handleSelectFieldChange}
                     >
-                        {COURSES_MOCK.map(({ id, name }) => (
+                        {courses.map(({ id, name }) => (
                             <MenuItem key={id} value={id}>
                                 {name}
                             </MenuItem>
@@ -181,7 +231,7 @@ const AcademicDataForm: React.FC<Props> = ({ student, setStudent, activeStep, se
                         label="Tipo da Bolsa"
                         onChange={handleSelectFieldChange}
                     >
-                        {TYPE_ASSISTANCE_MOCK.map(({ id, name }) => (
+                        {assistanceTypes.map(({ id, name }) => (
                             <MenuItem key={id} value={id}>
                                 {name}
                             </MenuItem>

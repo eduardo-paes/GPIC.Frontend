@@ -98,7 +98,7 @@ export const LoginForm: React.FC<Props> = ({ authService }) => {
                         sx={{ marginTop: '1rem' }}
                     />
                     {errors?.password && <FormHelperText error>{errors.password}</FormHelperText>}
-                    <StyledButton variant="contained" type="submit">
+                    <StyledButton variant="contained" type="submit" sx={{ marginTop: '1rem' }}>
                         Entrar
                     </StyledButton>
                 </Form>
