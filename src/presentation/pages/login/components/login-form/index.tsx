@@ -1,5 +1,6 @@
 import { IAuthService } from "@/domain/usecases/authentication-interface";
 import GPICLogo from "@/presentation/assets/logo-gpic-original.svg";
+import Loading from "@/presentation/components/loading";
 import { validateEmail, validatePassword } from "@/presentation/pages/signup/validations";
 import { Form, Paragraph, StyledButton, StyledCard, StyledTextField, Subtitle } from "@/presentation/styles/styled-components";
 import {
@@ -25,6 +26,7 @@ export const LoginForm: React.FC<Props> = ({ authService }) => {
     const [email, setEmail] = React.useState<string>("");
     const [password, setPassword] = React.useState<string>("");
     const [errors, setErrors] = React.useState<LoginError>();
+    const [loading, setLoading] = React.useState<boolean>(false);
     const navigate = useNavigate();
 
     const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,12 +46,15 @@ export const LoginForm: React.FC<Props> = ({ authService }) => {
     };
 
     const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        setLoading(true);
         const isValid = validateForm();
         event.preventDefault();
         if (isValid) {
             await authService.login({ email: email, password });
+            setLoading(false);
             navigate('/home', { replace: true });
         }
+        setLoading(false);
     };
 
     const validateForm = (): boolean => {
@@ -57,12 +62,8 @@ export const LoginForm: React.FC<Props> = ({ authService }) => {
             email: validateEmail(email),
             password: validatePassword(password)
         };
-
-        if (newErrors.email || newErrors.password)
-            setErrors(newErrors);
-        else
-            return true;
-
+        if (newErrors.email || newErrors.password) setErrors(newErrors);
+        else return true;
         return false;
     };
 
@@ -108,6 +109,7 @@ export const LoginForm: React.FC<Props> = ({ authService }) => {
                 <Paragraph style={{ textAlign: 'center' }}>
                     Não tem uma conta? <Link href="signup">Realizar cadastro</Link>
                 </Paragraph>
+                <Loading isLoading={loading} />
             </CardContent>
         </StyledCard>
     );
