@@ -29,6 +29,10 @@ const TopBar: React.FC = () => {
         navigate('/edital');
     };
 
+    const navigateToHomePage = () => {
+        navigate('/');
+    };
+
     const handleLogout = () => {
         sessionStorage.removeItem('jwtToken');
         navigate('/login');
@@ -41,6 +45,8 @@ const TopBar: React.FC = () => {
                     src={GPICLogo}
                     alt="Gerenciamento de Projetos de Iniciação Científica"
                     width={160}
+                    style={{ cursor: 'pointer' }}
+                    onClick={navigateToHomePage}
                 />
 
                 <IconButton
@@ -71,6 +77,7 @@ const TopBar: React.FC = () => {
                     open={open}
                     onClose={handleMenuClose}
                 >
+                    <MenuItem onClick={navigateToHomePage}>Página inicial</MenuItem>
                     <MenuItem onClick={navigateToNoticePage}>Editais</MenuItem>
                     <MenuItem onClick={handleLogout}>Logout</MenuItem>
                 </Menu>
