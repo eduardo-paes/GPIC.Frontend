@@ -6,9 +6,23 @@ import { Student } from "../models/student";
  */
 export interface IStudentService {
     /**
+     * Busca os estudantes ativos.
+     * @param {IStudentService.GetParams} params - Os parâmetros para buscar os estudantes.
+     * @returns {Promise<Array<Student>>} Uma promessa que resolve para a lista de estudantes encontrados.
+    */
+    get(params: IStudentService.GetParams): Promise<Array<Student>>;
+
+    /**
+     * Busca o aluno que possui o id informado.
+     * @param {IStudentService.GetParams} params - Os parâmetros para encontrar o aluno.
+     * @returns {Promise<Student>} Uma promessa que resolve para o aluno encontrado.
+     */
+    getById(params: IStudentService.GetParams): Promise<Student>;
+
+    /**
      * Adiciona um estudante com base nos parâmetros fornecidos.
      * @param {IStudentService.AddParams} params - Os parâmetros para adicionar o estudante.
-     * @returns {Promise<User>} Uma promessa que resolve para o estudante adicionado.
+     * @returns {Promise<Student>} Uma promessa que resolve para o estudante adicionado.
      */
     add(params: IStudentService.AddParams): Promise<Student>;
 }
@@ -18,6 +32,16 @@ export interface IStudentService {
  * @namespace IStudentService
  */
 export namespace IStudentService {
+    /**
+     * Parâmetros para buscar um ou mais estudantes.
+     * @typedef {Object} GetParams
+     */
+    export type GetParams = {
+        id?: string;
+        take?: number;
+        skip?: number;
+    };
+
     /**
      * Parâmetros para adicionar um estudante.
      * @typedef {Object} AddParams

@@ -2,6 +2,7 @@ import { User } from "./user";
 
 export interface Student {
 	id: string;
+	name: string;
 	phone: number;
 	phoneDDD: number;
 	assistanceTypeId: string;
@@ -17,10 +18,8 @@ export interface Student {
 	dispatchDate: Date;
 	issuingAgency: string;
 	RG: number;
-	birthDate: string;
+	birthDate: Date;
 	registrationCode: string;
-	course: string;
-	campus: string;
 	user: User;
 	deletedAt: Date;
 	cellPhoneDDD: number;
