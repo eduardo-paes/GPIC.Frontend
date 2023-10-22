@@ -65,7 +65,7 @@ export class NoticeService implements INoticeService {
     async getById(params: INoticeService.GetParams): Promise<Notice> {
 
         const httpRequest: HttpRequest = {
-            url: `${this.url}/${params.id}`,
+            url: `${this.url}${params.id}`,
             method: 'GET',
             headers: this.privateHeader
         };
@@ -193,7 +193,6 @@ export class NoticeService implements INoticeService {
 
         try {
             const httpResponse: HttpResponse = await this.httpClient.request(httpRequest);
-            console.log(httpResponse);
 
             if (httpResponse.statusCode === HttpStatusCode.ok) {
                 return httpResponse.body;

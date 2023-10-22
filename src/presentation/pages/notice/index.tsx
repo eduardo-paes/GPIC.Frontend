@@ -133,10 +133,8 @@ const NoticeManagementPage: React.FC<Props> = ({ noticeService, activityService,
             setIsLoading(true);
             if (selectedNotice.id) {
                 const res = await noticeService.update(noticeDTO);
-                console.log(res);
             } else {
                 const res = await noticeService.add(noticeDTO);
-                console.log(res);
             }
             setFeedback({ message: 'Edital salvo com sucesso.', type: 'success' });
             setRefresh(true);
