@@ -137,7 +137,6 @@ export class ProgramTypeService implements IProgramTypeService {
 
         try {
             const httpResponse: HttpResponse = await this.httpClient.request(httpRequest);
-            console.log(httpResponse);
 
             if (httpResponse.statusCode === HttpStatusCode.ok) {
                 return httpResponse.body;
