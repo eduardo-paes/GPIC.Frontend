@@ -1,11 +1,7 @@
 import React from 'react';
 import TopBar from '../top-bar';
 
-type Props = {
-    children: React.ReactElement;
-}
-
-const MainLayout: React.FC<Props> = ({ children }) => {
+const MainLayout: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
     return (
         <>
             <TopBar />
