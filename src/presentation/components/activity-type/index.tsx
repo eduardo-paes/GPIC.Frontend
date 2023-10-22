@@ -97,7 +97,7 @@ const ActivityTypeAccordion: React.FC<Props> = ({ activityType, edital, setEdita
         <Accordion sx={{ backgroundColor: colors.secondary[10] }}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Paragraph sx={{ width: '50%', fontWeight: 'bolder', fontSize: '1rem', flexShrink: 0, marginTop: 0 }}>{activityType.name}</Paragraph>
-                <Paragraph sx={{ marginTop: 0 }}>{activityType.unity}</Paragraph>
+                <Paragraph>{activityType.unity}</Paragraph>
             </AccordionSummary>
             <AccordionDetails>
                 <Grid container spacing={1} alignItems="center">
