@@ -33,10 +33,9 @@ export class SubAreaService implements ISubAreaService {
         const key = import.meta.env.VITE_OCP_APIM_SUBSCRIPTION_KEY;
 
         const httpRequest: HttpRequest = {
-            url: this.url,
+            url: `${this.url}area/${params.areaId}`,
             method: 'GET',
             body: {
-                areaId: params.areaId,
                 skip: params.skip,
                 take: params.take
             },

@@ -33,7 +33,7 @@ export class AreaService implements IAreaService {
         const key = import.meta.env.VITE_OCP_APIM_SUBSCRIPTION_KEY;
 
         const httpRequest: HttpRequest = {
-            url: this.url,
+            url: `${this.url}?mainAreaId=${params.mainAreaId}`,
             method: 'GET',
             body: {
                 mainAreaId: params.mainAreaId,
