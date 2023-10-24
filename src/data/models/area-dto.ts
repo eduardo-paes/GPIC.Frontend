@@ -5,6 +5,6 @@ export interface AreaDTO {
 	name: string;
 	code: string;
 	mainAreaId: string;
-	mainArea: MainAreaDTO;
+	mainArea?: MainAreaDTO;
 	deletedAt?: Date;
 }
