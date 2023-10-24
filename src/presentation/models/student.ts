@@ -1,5 +1,6 @@
 export interface StudentViewModel {
 	//#region User Properties
+	id?: string;
 	name?: string;
 	CPF?: string;
 	email?: string;

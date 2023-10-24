@@ -24,9 +24,26 @@ const black = {
 
 const white = "rgba(255, 255, 255, 1)";
 
+const red = "rgba(255, 119, 119, 1)";
+
+const status = {
+    0: "rgba(10, 73, 126, 0.5)",
+    1: "rgba(10, 73, 126, 1)",
+    2: "rgba(243, 208, 62, 0.7)",
+    3: "rgba(190, 70, 50, 0.7)",
+    4: "rgba(90, 170, 100, 0.7)",
+    5: "rgba(243, 208, 62, 0.7)",
+    6: "rgba(80, 160, 140, 0.7)",
+    7: "rgba(240, 200, 80, 0.5)",
+    8: "rgba(190, 70, 50, 0.7)",
+    9: "rgba(190, 70, 50, 0.7)",
+}
+
 export const colors = {
     primary: primary,
     secondary: secondary,
     white: white,
     black: black,
+    red: red,
+    status: status
 };

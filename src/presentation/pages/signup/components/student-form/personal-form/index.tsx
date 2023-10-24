@@ -9,21 +9,7 @@ import { ptBR } from '@mui/x-date-pickers/locales';
 import { Form, Formik, FormikHelpers } from "formik";
 import React from "react";
 import { validateBirthDate, validateCPF, validateConfirmPassword, validateDispatchDate, validateEmail, validateGender, validateIssuingAgency, validateName, validatePassword, validateRG, validateRace, validateStudentEmail } from "../../../validations";
-
-const GENDER_OPTIONS = [
-    { value: '0', label: 'Masculino' },
-    { value: '1', label: 'Feminino' }
-]
-
-const RACE_OPTIONS = [
-    { value: '0', label: 'Branca' },
-    { value: '1', label: 'Preta' },
-    { value: '2', label: 'Parda' },
-    { value: '3', label: 'Amarela' },
-    { value: '4', label: 'Indígena' },
-    { value: '5', label: 'Não declarado' },
-    { value: '6', label: 'Não dispõe da informação' }
-]
+import { GENDER_OPTIONS, RACE_OPTIONS } from "@/presentation/utils/constants";
 
 type PersonalError = {
     name: string | null;

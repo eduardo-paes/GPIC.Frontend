@@ -16,12 +16,73 @@ export class StudentService implements IStudentService {
      * @param {string} url - A URL para adicionar um usuário.
      * @param {IHttpClient} httpClient - O cliente HATEOAS para realizar as requisições.
      * @param {Record<string, string>} publicHeader - Header para requisições públicas.
+     * @param {Record<string, string>} privateHeader - Header para requisições privadas.
      */
     constructor(
         private readonly url: string,
         private readonly httpClient: IHttpClient,
-        private readonly publicHeader: Record<string, string>
+        private readonly publicHeader: Record<string, string>,
+        private readonly privateHeader: Record<string, string>
     ) { }
+
+    /**
+     * Busca os estudantes ativos.
+     * @async
+     * @param {IStudentService.GetParams} params - Os parâmetros para buscar os estudantes.
+     * @returns {Promise<Array<Student>>} Uma promessa que resolve para a lista de estudantes encontrados.
+     */
+    async get(params: IStudentService.GetParams): Promise<Student[]> {
+        const httpRequest: HttpRequest = {
+            url: `${this.url}`,
+            method: 'GET',
+            body: {
+                skip: params.skip,
+                take: params.take,
+            },
+            headers: this.privateHeader
+        };
+
+        try {
+            const httpResponse: HttpResponse = await this.httpClient.request(httpRequest);
+
+            if (httpResponse.statusCode === HttpStatusCode.ok) {
+                return httpResponse.body;
+            } else if (httpResponse.statusCode === HttpStatusCode.notFound) {
+                return [];
+            } else {
+                throw new Error('Falha ao buscar estudantes.');
+            }
+        } catch (error: any) {
+            throw new Error(`Erro ao realizar a busca dos estudantes: ${error.message}`);
+        }
+    }
+
+    /**
+     * Busca o aluno pelo id informado.
+     * @async
+     * @param {IStudentService.GetParams} params - Os parâmetros para buscar o aluno.
+     * @returns {Promise<Student>} Uma promessa que resolve para o aluno encontrado.
+     */
+    async getById(params: IStudentService.GetParams): Promise<Student> {
+
+        const httpRequest: HttpRequest = {
+            url: `${this.url}${params.id}`,
+            method: 'GET',
+            headers: this.privateHeader
+        };
+
+        try {
+            const httpResponse: HttpResponse = await this.httpClient.request(httpRequest);
+
+            if (httpResponse.statusCode === HttpStatusCode.ok) {
+                return httpResponse.body;
+            } else {
+                throw new Error('Falha ao buscar professor.');
+            }
+        } catch (error: any) {
+            throw new Error(`Erro ao realizar a busca do professor: ${error.message}`);
+        }
+    }
 
     /**
      * Adiciona um usuário com base nos parâmetros fornecidos.
